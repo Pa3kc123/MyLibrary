@@ -7,7 +7,7 @@ public class Universal
 {
     public static void main(String[] args)
     {
-        /*try
+        try
         {
             Device[] devices = getUsableDevices();
             for (Device device : devices)
@@ -22,13 +22,10 @@ public class Universal
         catch (Exception ex)
         {
             ex.printStackTrace(System.out);
-        }*/
-
-        sk.pa3kc.mylibrary.MyConfig.MyConfig config = new sk.pa3kc.mylibrary.MyConfig.MyConfig(DefaultSystemPropertyStrings.USER_DIR + DefaultSystemPropertyStrings.FILE_SEPARATOR + "file.conf", MyConfig.class.getName(), true);
-        config.finalize();
+        }
     }
 
-    public static Device[] getUsableDevices() throws java.net.SocketException
+    public static Device[] getUsableDevices() throws java.net.SocketException, NullPointerException
     {
         java.util.List<Device> devices = new java.util.ArrayList<>();
 
