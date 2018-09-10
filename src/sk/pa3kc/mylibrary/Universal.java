@@ -1,7 +1,5 @@
 package sk.pa3kc.mylibrary;
 
-import sk.pa3kc.mylibrary.MyConfig.MyConfig;
-
 @SuppressWarnings ({ "WeakerAccess", "unused", "PointlessBooleanExpression" })
 public class Universal
 {
