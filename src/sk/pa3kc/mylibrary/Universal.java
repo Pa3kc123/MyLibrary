@@ -15,6 +15,7 @@ public class Universal
                 System.out.print("Network = " + device.getNetworkIP().AsFormattedString() + "\n");
                 System.out.print("Local = " + device.getLocalIP().AsFormattedString() + "\n");
                 System.out.print("Broadcast = " + device.getBroadcastIP().AsFormattedString() + "\n");
+                System.out.print("Test of subnet range = " + (device.getSubNetRange().doesInvolve(device.getLocalIP()) == true ? "PASSED" : "FAILED") + "\n");
             }
         }
         catch (Exception ex)

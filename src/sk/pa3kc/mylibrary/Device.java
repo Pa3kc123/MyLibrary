@@ -3,18 +3,19 @@ package sk.pa3kc.mylibrary;
 @SuppressWarnings ({ "PointlessBooleanExpression", "WeakerAccess", "unused" })
 public class Device
 {
-    private IPAddress localIP;
-    private IPAddress networkIP;
-    private IPAddress broadcastIP;
-    private IPAddress mask;
-    private String deviceName;
-    private java.util.List<IPAddress> addresses = new java.util.ArrayList<>();
+    private final IPAddress localIP;
+    private final IPAddress networkIP;
+    private final IPAddress broadcastIP;
+    private final IPAddress mask;
+    private final String deviceName;
+    private final java.util.List<IPAddress> addresses = new java.util.ArrayList<>();
+    private final SubNetRange subNetRange;
 
     public Device(java.net.NetworkInterface device, java.net.Inet4Address localAddress)
     {
         this.deviceName = device.getName();
 
-        int tmp = 0;
+        int tmp = 0b0000000000000000000000000000000000000000;
 
         for (int i = 0; i < 4; i++)
         {
@@ -22,7 +23,7 @@ public class Device
         }
 
         this.localIP = new IPAddress(tmp);
-        tmp = 0;
+        tmp = 0b0000000000000000000000000000000000000000;
 
         for (java.net.InterfaceAddress address : device.getInterfaceAddresses())
         {
@@ -40,13 +41,16 @@ public class Device
             if (i == this.localIP.AsDecimal()) continue;
             this.addresses.add(new IPAddress(i));
         }
+
+        this.subNetRange = new SubNetRange(this.mask);
     }
 
-    public IPAddress getLocalIP() { return this.localIP; }
-    public IPAddress getBroadcastIP() { return this.broadcastIP; }
-    public IPAddress getNetworkIP() { return this.networkIP; }
-    public IPAddress getMask() { return this.mask; }
-    public IPAddress[] getAddresses() { return this.addresses.toArray(new IPAddress[0]); }
-    public int getAddressesCount() { return this.addresses.size(); }
-    public String getDeviceName() { return this.deviceName; }
+    public final IPAddress getLocalIP() { return this.localIP; }
+    public final IPAddress getBroadcastIP() { return this.broadcastIP; }
+    public final IPAddress getNetworkIP() { return this.networkIP; }
+    public final IPAddress getMask() { return this.mask; }
+    public final IPAddress[] getAddresses() { return this.addresses.toArray(new IPAddress[0]); }
+    public final int getAddressesCount() { return this.addresses.size(); }
+    public final String getDeviceName() { return this.deviceName; }
+    public final SubNetRange getSubNetRange() { return this.subNetRange; }
 }

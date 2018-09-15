@@ -1,18 +1,42 @@
 package sk.pa3kc.mylibrary;
 
+@SuppressWarnings ({ "WeakerAccess", "unused" })
 public class SubNetRange
 {
-    private int firstIPAddress;
-    private int lastIPAddress;
+    private final int mask;
 
-    public SubNetRange(int firstIPAddress, int lastIPAddress)
+    public SubNetRange(int mask)
     {
-        this.firstIPAddress = firstIPAddress & 0b11111111;
-        this.lastIPAddress = lastIPAddress & 0b11111111;
+        this.mask = mask;
+    }
+    public SubNetRange(IPAddress mask)
+    {
+        this.mask = mask.AsDecimal();
     }
 
-    boolean involve(int IPAddress)
+    public boolean doesInvolve(int ipAddress)
     {
-        return (IPAddress & 0b11111111) > this.firstIPAddress && (IPAddress & 0b11111111) < lastIPAddress;
+        return Integer.toBinaryString(ipAddress & ~this.mask).length() <= Integer.toBinaryString(~this.mask).length();
+    }
+    public boolean doesInvolve(IPAddress ipAddress)
+    {
+        return doesInvolve(ipAddress.AsDecimal());
+    }
+
+    public static boolean doesInvolve(int ipAddress, int mask)
+    {
+        return Integer.toBinaryString(ipAddress & ~mask).length() <= Integer.toBinaryString(~mask).length();
+    }
+    public static boolean doesInvolve(int ipAddress, IPAddress mask)
+    {
+        return doesInvolve(ipAddress, mask.AsDecimal());
+    }
+    public static boolean doesInvolve(IPAddress ipAddress, int mask)
+    {
+        return doesInvolve(ipAddress.AsDecimal(), mask);
+    }
+    public static boolean doesInvolve(IPAddress ipAddress, IPAddress mask)
+    {
+        return doesInvolve(ipAddress.AsDecimal(), mask.AsDecimal());
     }
 }
