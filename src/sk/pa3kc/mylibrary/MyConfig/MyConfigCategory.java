@@ -1,4 +1,4 @@
-package sk.pa3kc.mylibrary.MyConfig;
+package sk.pa3kc.mylibrary.myconfig;
 
 @SuppressWarnings({ "unused", "WeakerAccess", "UnusedReturnValue" })
 public class MyConfigCategory
@@ -7,10 +7,9 @@ public class MyConfigCategory
     private String _name = null;
 
     public MyConfigRowCollection getRowCollection() { return this._rowCollection; }
-
-    public Void setRow(MyConfigRowCollection value) { this._rowCollection = value; return null; }
+    public void setRowCollection(MyConfigRowCollection value) { this._rowCollection = value; }
     public String getName() { return this._name; }
-    public Void setName(String value) { this._name = value; return null; }
+    public void setName(String value) { this._name = value; }
 
     @Override
     public void finalize()

@@ -8,6 +8,7 @@ public class Universal
         try
         {
             Device[] devices = getUsableDevices();
+            assert devices != null;
             for (Device device : devices)
             {
                 System.out.print("Device name = " + device.getDeviceName() + "\n");
@@ -24,20 +25,28 @@ public class Universal
         }
     }
 
-    public static Device[] getUsableDevices() throws java.net.SocketException, NullPointerException
+    public static Device[] getUsableDevices()
     {
         java.util.List<Device> devices = new java.util.ArrayList<>();
 
-        for (java.net.NetworkInterface device : java.util.Collections.list(java.net.NetworkInterface.getNetworkInterfaces()))
+        try
         {
-            if (device.isVirtual() == true || device.isUp() == false) continue;
-
-            for (java.net.InetAddress address : java.util.Collections.list(device.getInetAddresses()))
+            for (java.net.NetworkInterface device : java.util.Collections.list(java.net.NetworkInterface.getNetworkInterfaces()))
             {
-                if (address.isLoopbackAddress() == false && address instanceof java.net.Inet6Address == false) devices.add(new Device(device, (java.net.Inet4Address) address));
+                if (device.isVirtual() == true || device.isUp() == false) continue;
+
+                for (java.net.InetAddress address : java.util.Collections.list(device.getInetAddresses()))
+                {
+                    if (address.isLoopbackAddress() == false && address instanceof java.net.Inet6Address == false)
+                        devices.add(new Device(device, (java.net.Inet4Address) address));
+                }
             }
         }
+        catch (Throwable ex)
+        {
+            ex.printStackTrace(System.out);
+        }
 
-        return devices.toArray(new Device[0]);
+        return devices.size() != 0 ? devices.toArray(new Device[0]) : null;
     }
 }

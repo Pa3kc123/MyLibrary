@@ -1,17 +1,17 @@
-package sk.pa3kc.mylibrary.MyConfig;
+package sk.pa3kc.mylibrary.myconfig;
 
 @SuppressWarnings ({ "WeakerAccess", "unused" })
 public class MyConfigCategoryCollection
 {
     private MyConfigCategory[] _categories = null;
-    private Short _length = 0;
+    private int _length = 0;
 
-    public MyConfigCategory getCategory(Short index) { return this._categories[index]; }
-    public MyConfigCategory getCategory(Integer index) { return this._categories[index]; }
-    public Void setCategory(Short index, MyConfigCategory value) { this._categories[index] = value; return null; }
-    public Short getLength() { return this._length; }
+    public MyConfigCategory getCategory(int index) { return this._categories[index]; }
+    public void setCategory(int index, MyConfigCategory value) { this._categories[index] = value; }
 
-    public void Add()
+    public int getLength() { return this._length; }
+
+    public void addCategory()
     {
         MyConfigCategory[] tmp = this._categories;
         this._categories = new MyConfigCategory[++this._length];
@@ -24,7 +24,6 @@ public class MyConfigCategoryCollection
     public void finalize()
     {
         this._categories = null;
-        this._length = null;
         try { super.finalize(); } catch (Throwable ex) { ex.printStackTrace(System.out); }
     }
 }

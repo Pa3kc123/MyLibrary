@@ -1,19 +1,17 @@
-package sk.pa3kc.mylibrary.MyConfig;
+package sk.pa3kc.mylibrary.myconfig;
 
 @SuppressWarnings({ "unused", "WeakerAccess", "UnusedReturnValue" })
 public class MyConfigRowCollection
 {
     private MyConfigRow[] _rows = null;
-    private Short _length = 0;
+    private int _length = 0;
 
-    public MyConfigRow getRow(Short index) { return this._rows[index]; }
-    public MyConfigRow getRow(Integer index) { return this._rows[index]; }
-    public Void setRow() { this._rows = null; return null; }
-    public Void setRow(Short index, MyConfigRow value) { this._rows[index] = value; return null; }
+    public MyConfigRow getRow(int index) { return this._rows[index]; }
+    public void setRow(int index, MyConfigRow value) { this._rows[index] = value; }
 
-    public Short getLength() { return this._length; }
+    public int getLength() { return this._length; }
 
-    public void Add()
+    public void addRow()
     {
         MyConfigRow[] tmp = this._rows;
         this._rows = new MyConfigRow[++this._length];
@@ -25,7 +23,6 @@ public class MyConfigRowCollection
     public void finalize()
     {
         this._rows = null;
-        this._length = null;
         try { super.finalize(); } catch (Throwable ex) { ex.printStackTrace(System.out); }
     }
 }

@@ -1,4 +1,4 @@
-package sk.pa3kc.mylibrary.MyConfig;
+package sk.pa3kc.mylibrary.myconfig;
 
 @SuppressWarnings ({ "unused", "WeakerAccess" })
 public class MyConfigRow
@@ -6,8 +6,8 @@ public class MyConfigRow
     private MyConfigColumnCollection _columnCollection = new MyConfigColumnCollection();
 
     public MyConfigColumnCollection getColumnCollection() { return this._columnCollection; }
-    public Void setColumn(MyConfigColumnCollection value) { this._columnCollection = value; return null; }
-    public Short getLength() { return this._columnCollection.getLength(); }
+    public void setColumn(MyConfigColumnCollection value) { this._columnCollection = value; }
+    public int getLength() { return this._columnCollection.getLength(); }
 
     @Override
     public void finalize()

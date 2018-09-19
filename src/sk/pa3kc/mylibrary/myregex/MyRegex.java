@@ -1,4 +1,4 @@
-package sk.pa3kc.mylibrary;
+package sk.pa3kc.mylibrary.myregex;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -91,7 +91,7 @@ public class MyRegex
      * String to check
      * @param pattern
      * Patter used to check
-     * @return 
+     * @return
      * String array with matches
      */
     public static String[] Matches(String input, Pattern pattern)
@@ -104,7 +104,7 @@ public class MyRegex
      * String to check
      * @param pattern
      * Patter used to check
-     * @return 
+     * @return
      * String array with matches
      */
     public static String[] Matches(String input, String pattern)
@@ -112,7 +112,7 @@ public class MyRegex
         Matcher matcher = Pattern.compile(pattern).matcher(input);
         String[] resultArray = new String[matcher.groupCount()];
         short j = 0;
-        
+
         while (matcher.find() == true)
         {
             for (short i = 1; i <= matcher.groupCount(); i++)
@@ -120,7 +120,7 @@ public class MyRegex
                 resultArray[j++] = matcher.group(i);
             }
         }
-        
+
         return resultArray;
     }
     /**
@@ -131,7 +131,7 @@ public class MyRegex
      * Patter used to check
      * @param options
      * Additional regex options (Multiple options need to be divided by '|')
-     * @return 
+     * @return
      * String array with matches
      */
     public static String[] Matches(String input, Pattern pattern, int options)
@@ -146,12 +146,16 @@ public class MyRegex
      * Patter used to check
      * @param options
      * Additional regex options (Multiple options need to be divided by '|')
-     * @return 
+     * @return
      * String array with matches
      */
-    public static String[] Matches(String input, String pattern, int options)
+    @SuppressWarnings ("MagicConstant")
+    public static String[] Matches(String input, String pattern, int... options)
     {
-        Matcher matcher = Pattern.compile(pattern, options).matcher(input);
+        int optionsCode = 0;
+        for (int option : options) optionsCode |= option;
+
+        Matcher matcher = Pattern.compile(pattern, optionsCode).matcher(input);
         String[] resultArray = new String[matcher.groupCount()];
         short j = 0;
 
@@ -162,7 +166,7 @@ public class MyRegex
                 resultArray[j++] = matcher.group(i);
             }
         }
-        
+
         return resultArray;
     }
 }
