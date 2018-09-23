@@ -8,22 +8,22 @@ public class Device
     private final IPAddress broadcastIP;
     private final IPAddress mask;
     private final String deviceName;
-    private final java.util.List<IPAddress> addresses = new java.util.ArrayList<>();
+    private final java.util.List<IPAddress> addresses = new java.util.ArrayList<IPAddress>();
     private final SubNetRange subNetRange;
 
     public Device(java.net.NetworkInterface device, java.net.Inet4Address localAddress)
     {
         this.deviceName = device.getName();
 
-        int tmp = 0b0000000000000000000000000000000000000000;
+        int tmp = 0;
 
         for (int i = 0; i < 4; i++)
         {
-            tmp |= (localAddress.getAddress()[i] & 0b11111111) << 8 * (4 - (i+1));
+            tmp |= localAddress.getAddress()[i] << 8 * (4 - (i+1));
         }
 
         this.localIP = new IPAddress(tmp);
-        tmp = 0b0000000000000000000000000000000000000000;
+        tmp = 0;
 
         for (java.net.InterfaceAddress address : device.getInterfaceAddresses())
         {

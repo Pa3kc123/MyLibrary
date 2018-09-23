@@ -27,7 +27,7 @@ public class Universal
 
     public static Device[] getUsableDevices()
     {
-        java.util.List<Device> devices = new java.util.ArrayList<>();
+        java.util.List<Device> devices = new java.util.ArrayList<Device>();
 
         try
         {
