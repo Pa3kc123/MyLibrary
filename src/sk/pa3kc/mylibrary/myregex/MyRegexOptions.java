@@ -1,6 +1,5 @@
 package sk.pa3kc.mylibrary.myregex;
 
-@SuppressWarnings ({ "unused", "SpellCheckingInspection" })
 public abstract class MyRegexOptions
 {
     private MyRegexOptions(){}

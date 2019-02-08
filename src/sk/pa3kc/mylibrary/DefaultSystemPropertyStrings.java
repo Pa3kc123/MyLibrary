@@ -1,6 +1,5 @@
 package sk.pa3kc.mylibrary;
 
-@SuppressWarnings ({ "unused", "SpellCheckingInspection" })
 public class DefaultSystemPropertyStrings
 {
     public static final String JAVA_RUNTIME_NAME = System.getProperty("java.runtime.name");
@@ -58,5 +57,4 @@ public class DefaultSystemPropertyStrings
     public static final String SUN_IO_UNICODE_ENCODING = System.getProperty("sun.io.unicode.encoding");
     public static final String SUN_DESKTOP = System.getProperty("sun.desktop");
     public static final String SUN_CPU_ISALIST = System.getProperty("sun.cpu.isalist");
-
 }

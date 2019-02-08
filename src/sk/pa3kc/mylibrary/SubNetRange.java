@@ -1,6 +1,5 @@
 package sk.pa3kc.mylibrary;
 
-@SuppressWarnings ({ "WeakerAccess", "unused" })
 public class SubNetRange
 {
     private final int mask;
@@ -11,7 +10,7 @@ public class SubNetRange
     }
     public SubNetRange(IPAddress mask)
     {
-        this.mask = mask.AsDecimal();
+        this.mask = mask.asDecimal();
     }
 
     public boolean doesInvolve(int ipAddress)
@@ -20,7 +19,7 @@ public class SubNetRange
     }
     public boolean doesInvolve(IPAddress ipAddress)
     {
-        return doesInvolve(ipAddress.AsDecimal());
+        return doesInvolve(ipAddress.asDecimal());
     }
 
     public static boolean doesInvolve(int ipAddress, int mask)
@@ -29,14 +28,14 @@ public class SubNetRange
     }
     public static boolean doesInvolve(int ipAddress, IPAddress mask)
     {
-        return doesInvolve(ipAddress, mask.AsDecimal());
+        return doesInvolve(ipAddress, mask.asDecimal());
     }
     public static boolean doesInvolve(IPAddress ipAddress, int mask)
     {
-        return doesInvolve(ipAddress.AsDecimal(), mask);
+        return doesInvolve(ipAddress.asDecimal(), mask);
     }
     public static boolean doesInvolve(IPAddress ipAddress, IPAddress mask)
     {
-        return doesInvolve(ipAddress.AsDecimal(), mask.AsDecimal());
+        return doesInvolve(ipAddress.asDecimal(), mask.asDecimal());
     }
 }

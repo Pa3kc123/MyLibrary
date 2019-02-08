@@ -1,6 +1,14 @@
 package sk.pa3kc.mylibrary;
 
-@SuppressWarnings ({ "WeakerAccess", "unused", "PointlessBooleanExpression" })
+import java.io.Closeable;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+
 public class Universal
 {
     public static void main(String[] args)
@@ -8,15 +16,15 @@ public class Universal
         try
         {
             Device[] devices = getUsableDevices();
-            assert devices != null;
+            String NEWLINE = DefaultSystemPropertyStrings.LINE_SEPARATOR;
             for (Device device : devices)
             {
-                System.out.print("Device name = " + device.getDeviceName() + "\n");
-                System.out.print("Device IP addresses:\n");
-                System.out.print("Network = " + device.getNetworkIP().AsFormattedString() + "\n");
-                System.out.print("Local = " + device.getLocalIP().AsFormattedString() + "\n");
-                System.out.print("Broadcast = " + device.getBroadcastIP().AsFormattedString() + "\n");
-                System.out.print("Test of subnet range = " + (device.getSubNetRange().doesInvolve(device.getLocalIP()) == true ? "PASSED" : "FAILED") + "\n");
+                System.out.print("Device name = " + device.getDeviceName() + NEWLINE);
+                System.out.print("Device IP addresses:" + NEWLINE);
+                System.out.print("Network = " + device.getNetworkIP().asFormattedString() + NEWLINE);
+                System.out.print("Local = " + device.getLocalIP().asFormattedString() + NEWLINE);
+                System.out.print("Broadcast = " + device.getBroadcastIP().asFormattedString() + NEWLINE);
+                System.out.print("Test of subnet range = " + (device.getSubNetRange().doesInvolve(device.getLocalIP()) == true ? "PASSED" : "FAILED") + NEWLINE);
             }
         }
         catch (Exception ex)
@@ -27,18 +35,23 @@ public class Universal
 
     public static Device[] getUsableDevices()
     {
-        java.util.List<Device> devices = new java.util.ArrayList<Device>();
+        List<Device> devices = new ArrayList<Device>();
 
         try
         {
-            for (java.net.NetworkInterface device : java.util.Collections.list(java.net.NetworkInterface.getNetworkInterfaces()))
+            Enumeration<NetworkInterface> netInterfaceEnumeration = NetworkInterface.getNetworkInterfaces();
+            while (netInterfaceEnumeration.hasMoreElements() == true)
             {
-                if (device.isVirtual() == true || device.isUp() == false) continue;
+                NetworkInterface netInterface = netInterfaceEnumeration.nextElement();
 
-                for (java.net.InetAddress address : java.util.Collections.list(device.getInetAddresses()))
+                if (netInterface.isVirtual() == true || netInterface.isUp() == false) continue;
+
+                Enumeration<InetAddress> netAddressEnumeration = netInterface.getInetAddresses();
+                while (netAddressEnumeration.hasMoreElements() == true)
                 {
-                    if (address.isLoopbackAddress() == false && address instanceof java.net.Inet6Address == false)
-                        devices.add(new Device(device, (java.net.Inet4Address) address));
+                    InetAddress netAddress = netAddressEnumeration.nextElement();
+                    if (netAddress.isLoopbackAddress() == false && netAddress instanceof Inet6Address == false)
+                        devices.add(new Device(netInterface, (Inet4Address)netAddress));
                 }
             }
         }
@@ -48,5 +61,46 @@ public class Universal
         }
 
         return devices.size() != 0 ? devices.toArray(new Device[0]) : null;
+    }
+
+    public static void closeStreams(Closeable... streams)
+    {
+        closeStreams(null, streams);
+    }
+    public static void closeStreams(AutoCloseable... encoders)
+    {
+        closeStreams(encoders, null);
+    }
+    public static void closeStreams(AutoCloseable[] encoders, Closeable[] streams)
+    {
+        if (encoders != null)
+        {
+            for (AutoCloseable encoder : encoders)
+            {
+                try
+                {
+                    encoder.close();
+                }
+                catch (Throwable ex)
+                {
+                    ex.printStackTrace();
+                }
+            }
+        }
+
+        if (streams != null)
+        {
+            for (Closeable stream : streams)
+            {
+                try
+                {
+                    stream.close();
+                }
+                catch (Throwable ex)
+                {
+                    ex.printStackTrace();
+                }
+            }
+        }
     }
 }

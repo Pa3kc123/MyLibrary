@@ -3,7 +3,6 @@ package sk.pa3kc.mylibrary.myregex;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@SuppressWarnings ({ "WeakerAccess", "unused", "PointlessBooleanExpression" })
 public class MyRegex
 {
     /**
@@ -69,7 +68,7 @@ public class MyRegex
      */
     public static void Replace(String input, Pattern pattern, String replacement)
     {
-        String newline = "\r\n";
+        String newline = System.getProperty("line.separator");
         System.out.print("Feature not implemented yet..." + newline);
     }
     /**
@@ -114,12 +113,8 @@ public class MyRegex
         short j = 0;
 
         while (matcher.find() == true)
-        {
-            for (short i = 1; i <= matcher.groupCount(); i++)
-            {
-                resultArray[j++] = matcher.group(i);
-            }
-        }
+        for (short i = 1; i <= matcher.groupCount(); i++)
+            resultArray[j++] = matcher.group(i);
 
         return resultArray;
     }
@@ -149,7 +144,6 @@ public class MyRegex
      * @return
      * String array with matches
      */
-    @SuppressWarnings ("MagicConstant")
     public static String[] Matches(String input, String pattern, int... options)
     {
         int optionsCode = 0;
@@ -160,12 +154,8 @@ public class MyRegex
         short j = 0;
 
         while (matcher.find() == true)
-        {
-            for (short i = 1; i <= matcher.groupCount(); i++)
-            {
-                resultArray[j++] = matcher.group(i);
-            }
-        }
+        for (short i = 1; i <= matcher.groupCount(); i++)
+            resultArray[j++] = matcher.group(i);
 
         return resultArray;
     }
