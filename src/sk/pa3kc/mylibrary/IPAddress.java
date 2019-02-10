@@ -19,7 +19,7 @@ public class IPAddress
         this.byteAddress = value;
 
         for (int i = 0; i < 4; i++)
-            this.binaryAddress |= byteToInt(value[i]);
+            this.binaryAddress |= (value[i] & 0x000000FF) << 8 * (3 - i);
     }
 
     private int byteToInt(byte value)

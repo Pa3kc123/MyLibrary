@@ -21,10 +21,13 @@ public class Universal
             {
                 System.out.print("Device name = " + device.getDeviceName() + NEWLINE);
                 System.out.print("Device IP addresses:" + NEWLINE);
-                System.out.print("Network = " + device.getNetworkIP().asFormattedString() + NEWLINE);
                 System.out.print("Local = " + device.getLocalIP().asFormattedString() + NEWLINE);
-                System.out.print("Broadcast = " + device.getBroadcastIP().asFormattedString() + NEWLINE);
-                System.out.print("Test of subnet range = " + (device.getSubNetRange().doesInvolve(device.getLocalIP()) == true ? "PASSED" : "FAILED") + NEWLINE);
+                if (device.isOnlyLoopback() == false)
+                {
+                    System.out.print("Network = " + device.getNetworkIP().asFormattedString() + NEWLINE);
+                    System.out.print("Broadcast = " + device.getBroadcastIP().asFormattedString() + NEWLINE);
+                    System.out.print("Test of subnet range = " + (device.getSubNetRange().doesInvolve(device.getLocalIP()) == true ? "PASSED" : "FAILED") + NEWLINE);
+                }
             }
         }
         catch (Exception ex)
@@ -35,7 +38,8 @@ public class Universal
 
     public static Device[] getUsableDevices()
     {
-        List<Device> devices = new ArrayList<Device>();
+        List<NetworkInterface> interfaces = new ArrayList<NetworkInterface>();
+        List<Device> usableDevices = new ArrayList<Device>();
 
         try
         {
@@ -46,12 +50,14 @@ public class Universal
 
                 if (netInterface.isVirtual() == true || netInterface.isUp() == false) continue;
 
+                interfaces.add(netInterface);
+
                 Enumeration<InetAddress> netAddressEnumeration = netInterface.getInetAddresses();
                 while (netAddressEnumeration.hasMoreElements() == true)
                 {
                     InetAddress netAddress = netAddressEnumeration.nextElement();
                     if (netAddress.isLoopbackAddress() == false && netAddress instanceof Inet6Address == false)
-                        devices.add(new Device(netInterface, (Inet4Address)netAddress));
+                        usableDevices.add(new Device(netInterface, (Inet4Address)netAddress));
                 }
             }
         }
@@ -60,7 +66,19 @@ public class Universal
             ex.printStackTrace(System.out);
         }
 
-        return devices.size() != 0 ? devices.toArray(new Device[0]) : null;
+        if (usableDevices.size() == 0)
+        {
+            Device[] devices = new Device[interfaces.size()];
+
+            for (int i = 0; i < devices.length; i++)
+                devices[i] = Device.onlyLocalHost(interfaces.get(i));
+
+            return devices;
+        }
+        else
+        {
+            return usableDevices.toArray(new Device[0]);
+        }
     }
 
     public static void closeStreams(Closeable... streams)
