@@ -7,9 +7,9 @@
             "command": "javac",
             "linux": {
                 "args": [
-                    "-d", "${workspaceFolder}/out/production",
+                    "-d", "${workspaceFolder}/bin/production",
                     "-sourcepath", "${workspaceFolder}/src",
-                    "-bootclasspath", "C:/Program Files/Java/jdk1.8.0_192/jre/lib/rt.jar",
+                    "-bootclasspath", "${env:JAVA_HOME}/jre/lib/rt.jar",
                     "-source", "1.6",
                     "-target", "1.6",
                     "${workspaceFolder}/src/sk/pa3kc/mylibrary/*.java",
@@ -17,9 +17,9 @@
                 ]
             },
             "args": [
-                "-d", "${workspaceFolder}\\out\\production",
+                "-d", "${workspaceFolder}\\bin\\production",
                 "-sourcepath", "${workspaceFolder}\\src",
-                "-bootclasspath", "C:\\Program Files\\Java\\jdk1.8.0_192\\jre\\lib\\rt.jar",
+                "-bootclasspath", "${env:JAVA_HOME}\\jre\\lib\\rt.jar",
                 "-source", "1.6",
                 "-target", "1.6",
                 "${workspaceFolder}\\src\\sk\\pa3kc\\mylibrary\\*.java",
@@ -32,9 +32,9 @@
             "command": "jar",
             "args": [
                 "-cfve",
-                "out/MyLibrary.jar",
+                "bin/MyLibrary.jar",
                 "sk.pa3kc.mylibrary.Universal",
-                "-C", "out/production", "."
+                "-C", "bin/production", "."
             ],
             "dependsOn": [
                 "build"
