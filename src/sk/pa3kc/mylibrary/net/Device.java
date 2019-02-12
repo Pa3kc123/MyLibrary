@@ -1,9 +1,12 @@
-package sk.pa3kc.mylibrary;
+package sk.pa3kc.mylibrary.net;
 
 import java.net.Inet4Address;
+import java.net.Inet6Address;
+import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 public class Device
@@ -91,5 +94,48 @@ public class Device
             mask |= 1 << 31 - i;
 
         return new IPAddress(mask);
+    }
+
+    public static Device[] getUsableDevices()
+    {
+        List<NetworkInterface> interfaces = new ArrayList<NetworkInterface>();
+        List<Device> usableDevices = new ArrayList<Device>();
+
+        try
+        {
+            Enumeration<NetworkInterface> netInterfaceEnumeration = NetworkInterface.getNetworkInterfaces();
+            while (netInterfaceEnumeration.hasMoreElements() == true)
+            {
+                NetworkInterface netInterface = netInterfaceEnumeration.nextElement();
+
+                if (netInterface.isVirtual() == true || netInterface.isUp() == false) continue;
+
+                interfaces.add(netInterface);
+
+                Enumeration<InetAddress> netAddressEnumeration = netInterface.getInetAddresses();
+                while (netAddressEnumeration.hasMoreElements() == true)
+                {
+                    InetAddress netAddress = netAddressEnumeration.nextElement();
+                    if (netAddress.isLoopbackAddress() == false && netAddress.getClass() != Inet6Address.class)
+                        usableDevices.add(new Device(netInterface, (Inet4Address)netAddress));
+                }
+            }
+        }
+        catch (Throwable ex)
+        {
+            ex.printStackTrace(System.out);
+        }
+
+        if (usableDevices.size() == 0)
+        {
+            Device[] devices = new Device[interfaces.size()];
+
+            for (int i = 0; i < devices.length; i++)
+                devices[i] = Device.onlyLocalHost(interfaces.get(i));
+
+            return devices;
+        }
+        
+        return usableDevices.toArray(new Device[0]);
     }
 }

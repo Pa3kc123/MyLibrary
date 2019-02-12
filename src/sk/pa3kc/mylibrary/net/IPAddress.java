@@ -1,4 +1,4 @@
-package sk.pa3kc.mylibrary;
+package sk.pa3kc.mylibrary.net;
 
 public class IPAddress
 {
@@ -20,11 +20,6 @@ public class IPAddress
 
         for (int i = 0; i < 4; i++)
             this.binaryAddress |= (value[i] & 0x000000FF) << 8 * (3 - i);
-    }
-
-    private int byteToInt(byte value)
-    {
-        return value > 0 ? value : value + 255;
     }
 
     public final int asDecimal() { return this.binaryAddress; }

@@ -3,14 +3,14 @@ package sk.pa3kc.mylibrary.myregex;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import sk.pa3kc.mylibrary.DefaultSystemPropertyStrings;
+
 public class MyRegex
 {
     /**
      * Checks if is match in input String by its pattern
-     * @param input
-     * String to check
-     * @param pattern
-     * Pattern used to check
+     * @param input String to check
+     * @param pattern Pattern used to check
      * @return True if match is found, else false
      */
     public static boolean isMatch(String input, String pattern)
@@ -19,24 +19,23 @@ public class MyRegex
     }
     /**
      * Checks if is match in input String by its pattern
-     * @param input
-     * String to check
-     * @param pattern
-     * Pattern used to check
-     * @param options
-     * Additional regex options (Multiple options need to be divided by '|')
+     * @param input String to check
+     * @param pattern Pattern used to check
+     * @param options Additional regex options
      * @return True if match is found, else false
      */
-    public static boolean isMatch(String input, String pattern, int options)
+    public static boolean isMatch(String input, String pattern, int... options)
     {
-        return Pattern.compile(pattern, options).matcher(input).matches();
+        int optionCode = 0;
+        for (int option : options)
+            optionCode |= option;
+
+        return Pattern.compile(pattern, optionCode).matcher(input).matches();
     }
     /**
      * Checks if is match in input String by its pattern
-     * @param input
-     * String to check
-     * @param pattern
-     * Pattern used to check
+     * @param input String to check
+     * @param pattern Pattern used to check
      * @return True if match is found, else false
      */
     public static boolean isMatch(String input, Pattern pattern)
@@ -45,40 +44,30 @@ public class MyRegex
     }
     /**
      * Checks if is match in input String by its pattern
-     * @param input
-     * String to check
-     * @param pattern
-     * Pattern used to check
-     * @param options
-     * Additional regex options (Multiple options need to be divided by '|')
+     * @param input String to check
+     * @param pattern Pattern used to check
+     * @param options Additional regex options
      * @return True if match is found, else false
      */
-    public static boolean isMatch(String input, Pattern pattern, int options)
+    public static boolean isMatch(String input, Pattern pattern, int... options)
     {
         return isMatch(input, pattern.pattern(), options);
     }
     /**
      * If in input is found match by pattern, that part of input will be replaced by replacement
-     * @param input
-     * String to check
-     * @param pattern
-     * Pattern used to check
-     * @param replacement
-     * String chosen as replacement
+     * @param input String to check
+     * @param pattern Pattern used to check
+     * @param replacement String chosen as replacement
      */
     public static void Replace(String input, Pattern pattern, String replacement)
     {
-        String newline = System.getProperty("line.separator");
-        System.out.print("Feature not implemented yet..." + newline);
+        System.out.print("Feature not implemented yet..." + DefaultSystemPropertyStrings.LINE_SEPARATOR);
     }
     /**
      * If in input is found match by pattern, that part of input will be replaced by replacement
-     * @param input
-     * String to check
-     * @param pattern
-     * Pattern used to check
-     * @param replacement
-     * String chosen as replacement
+     * @param input String to check
+     * @param pattern Pattern used to check
+     * @param replacement String chosen as replacement
      */
     public static void Replace(String input, String pattern, String replacement)
     {
@@ -86,12 +75,9 @@ public class MyRegex
     }
     /**
      * If in input are found matches by pattern, that parts will be returned as String[] starting from 0
-     * @param input
-     * String to check
-     * @param pattern
-     * Patter used to check
-     * @return
-     * String array with matches
+     * @param input String to check
+     * @param pattern Patter used to check
+     * @return String array with matches
      */
     public static String[] Matches(String input, Pattern pattern)
     {
@@ -99,12 +85,9 @@ public class MyRegex
     }
     /**
      * If in input are found matches by pattern, that parts will be returned as String[] starting from 0
-     * @param input
-     * String to check
-     * @param pattern
-     * Patter used to check
-     * @return
-     * String array with matches
+     * @param input String to check
+     * @param pattern Patter used to check
+     * @return String array with matches
      */
     public static String[] Matches(String input, String pattern)
     {
@@ -120,29 +103,21 @@ public class MyRegex
     }
     /**
      * If in input are found matches by pattern, that parts will be returned as String[] starting from 0
-     * @param input
-     * String to check
-     * @param pattern
-     * Patter used to check
-     * @param options
-     * Additional regex options (Multiple options need to be divided by '|')
-     * @return
-     * String array with matches
+     * @param input String to check
+     * @param pattern Patter used to check
+     * @param options Additional regex options
+     * @return String array with matches
      */
-    public static String[] Matches(String input, Pattern pattern, int options)
+    public static String[] Matches(String input, Pattern pattern, int... options)
     {
         return Matches(input, pattern.pattern(), options);
     }
     /**
      * If in input are found matches by pattern, that parts will be returned as String[] starting from 0
-     * @param input
-     * String to check
-     * @param pattern
-     * Patter used to check
-     * @param options
-     * Additional regex options (Multiple options need to be divided by '|')
-     * @return
-     * String array with matches
+     * @param input String to check
+     * @param pattern Patter used to check
+     * @param options Additional regex options
+     * @return String array with matches
      */
     public static String[] Matches(String input, String pattern, int... options)
     {

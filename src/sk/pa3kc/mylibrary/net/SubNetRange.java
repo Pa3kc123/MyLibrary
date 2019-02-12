@@ -1,4 +1,4 @@
-package sk.pa3kc.mylibrary;
+package sk.pa3kc.mylibrary.net;
 
 public class SubNetRange
 {

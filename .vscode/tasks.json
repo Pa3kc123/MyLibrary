@@ -10,32 +10,44 @@
                     "-d", "${workspaceFolder}/bin/production",
                     "-sourcepath", "${workspaceFolder}/src",
                     "-bootclasspath", "${env:JAVA_HOME}/jre/lib/rt.jar",
-                    "-source", "1.6",
-                    "-target", "1.6",
                     "${workspaceFolder}/src/sk/pa3kc/mylibrary/*.java",
                     "${workspaceFolder}/src/sk/pa3kc/mylibrary/myregex/*.java"
                 ]
             },
+            "windows": {
+                "args": [
+                    "-d", "${workspaceFolder}\\bin\\production",
+                    "-sourcepath", "${workspaceFolder}\\src",
+                    "-bootclasspath", "${env:JAVA_HOME}\\jre\\lib\\rt.jar",
+                    "${workspaceFolder}\\src\\sk\\pa3kc\\mylibrary\\*.java",
+                    "${workspaceFolder}\\src\\sk\\pa3kc\\mylibrary\\myregex\\*.java"
+                ]
+            },
             "args": [
-                "-d", "${workspaceFolder}\\bin\\production",
-                "-sourcepath", "${workspaceFolder}\\src",
-                "-bootclasspath", "${env:JAVA_HOME}\\jre\\lib\\rt.jar",
                 "-source", "1.6",
                 "-target", "1.6",
-                "${workspaceFolder}\\src\\sk\\pa3kc\\mylibrary\\*.java",
-                "${workspaceFolder}\\src\\sk\\pa3kc\\mylibrary\\myregex\\*.java"
             ]
         },
         {
             "label": "generate jar",
             "type": "shell",
             "command": "jar",
-            "args": [
-                "-cfve",
-                "bin/MyLibrary.jar",
-                "sk.pa3kc.mylibrary.Universal",
-                "-C", "bin/production", "."
-            ],
+            "linux": {
+                "args": [
+                    "-cfve",
+                    "bin/MyLibrary.jar",
+                    "sk.pa3kc.mylibrary.Universal",
+                    "-C", "bin/production", "."
+                ]
+            },
+            "windows": {
+                "args": [
+                    "-cfve",
+                    "bin\\MyLibrary.jar",
+                    "sk.pa3kc.mylibrary.Universal",
+                    "-C", "bin\\production", "."
+                ]
+            },
             "dependsOn": [
                 "build"
             ],

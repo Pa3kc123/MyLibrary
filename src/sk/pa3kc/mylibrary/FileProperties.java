@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Properties;
 
+import sk.pa3kc.mylibrary.util.StreamUtils;
+
 public class FileProperties extends Properties
 {
     private static final long serialVersionUID = 1L;
@@ -24,6 +26,7 @@ public class FileProperties extends Properties
     public boolean saveToFile()
     {
         FileOutputStream stream = null;
+
         try
         {
             stream = new FileOutputStream(new File(this.filePath));
@@ -36,8 +39,9 @@ public class FileProperties extends Properties
         }
         finally
         {
-            Universal.closeStreams(stream);
+            StreamUtils.closeStreams(stream);
         }
+
         return true;
     }
 }
