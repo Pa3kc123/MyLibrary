@@ -1,11 +1,28 @@
 package sk.pa3kc.mylibrary;
 
+import sk.pa3kc.mylibrary.async.AsyncResult;
 import sk.pa3kc.mylibrary.net.Device;
 
 public class Universal
 {
     public static void main(String[] args)
     {
+        System.out.print(doAsync(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    Thread.sleep(3000);
+                }
+                catch (Throwable ex)
+                {
+                    ex.printStackTrace();
+                }
+            }
+        }).equals(true) + NEWLINE);
+
         try
         {
             Device[] devices = Device.getUsableDevices();
@@ -27,5 +44,49 @@ public class Universal
         {
             ex.printStackTrace(System.out);
         }
+    }
+
+    public static AsyncResult doAsync(final Runnable runnable)
+    {
+        final Object lock = new Object();
+        final AsyncResult result = new AsyncResult();
+
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    runnable.run();
+                }
+                catch (Throwable ex)
+                {
+                    result.setException(ex);
+                    result.setExceptionType(ex.getClass());
+                }
+                finally
+                {
+                    synchronized (lock)
+                    {
+                        lock.notify();
+                    }
+                }
+            }
+        }).start();
+
+        synchronized (lock)
+        {
+            try
+            {
+                lock.wait();
+            }
+            catch (Throwable ex)
+            {
+                ex.printStackTrace();
+            }
+        }
+
+        return result;
     }
 }

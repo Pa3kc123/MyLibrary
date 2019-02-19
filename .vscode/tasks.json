@@ -11,7 +11,10 @@
                     "-sourcepath", "${workspaceFolder}/src",
                     "-bootclasspath", "${env:JAVA_HOME}/jre/lib/rt.jar",
                     "${workspaceFolder}/src/sk/pa3kc/mylibrary/*.java",
-                    "${workspaceFolder}/src/sk/pa3kc/mylibrary/myregex/*.java"
+                    "${workspaceFolder}/src/sk/pa3kc/mylibrary/async/*.java",
+                    "${workspaceFolder}/src/sk/pa3kc/mylibrary/myregex/*.java",
+                    "${workspaceFolder}/src/sk/pa3kc/mylibrary/net/*.java",
+                    "${workspaceFolder}/src/sk/pa3kc/mylibrary/util/*.java"
                 ]
             },
             "windows": {
@@ -20,7 +23,10 @@
                     "-sourcepath", "${workspaceFolder}\\src",
                     "-bootclasspath", "${env:JAVA_HOME}\\jre\\lib\\rt.jar",
                     "${workspaceFolder}\\src\\sk\\pa3kc\\mylibrary\\*.java",
-                    "${workspaceFolder}\\src\\sk\\pa3kc\\mylibrary\\myregex\\*.java"
+                    "${workspaceFolder}\\src\\sk\\pa3kc\\mylibrary\\async\\*.java",
+                    "${workspaceFolder}\\src\\sk\\pa3kc\\mylibrary\\myregex\\*.java",
+                    "${workspaceFolder}\\src\\sk\\pa3kc\\mylibrary\\net\\*.java",
+                    "${workspaceFolder}\\src\\sk\\pa3kc\\mylibrary\\util\\*.java"
                 ]
             },
             "args": [
