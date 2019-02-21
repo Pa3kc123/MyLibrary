@@ -1,32 +1,18 @@
 package sk.pa3kc.mylibrary;
 
 import sk.pa3kc.mylibrary.async.AsyncResult;
+import sk.pa3kc.mylibrary.async.AsyncRunnable;
 import sk.pa3kc.mylibrary.net.Device;
 
 public class Universal
 {
     public static void main(String[] args)
     {
-        System.out.print(doAsync(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                try
-                {
-                    Thread.sleep(3000);
-                }
-                catch (Throwable ex)
-                {
-                    ex.printStackTrace();
-                }
-            }
-        }).equals(true) + NEWLINE);
-
         try
         {
-            Device[] devices = Device.getUsableDevices();
-            String NEWLINE = DefaultSystemPropertyStrings.LINE_SEPARATOR;
+            final String NEWLINE = DefaultSystemPropertyStrings.LINE_SEPARATOR;
+            final Device[] devices = Device.getUsableDevices();
+
             for (Device device : devices)
             {
                 System.out.print("Device name = " + device.getDeviceName() + NEWLINE);
@@ -46,7 +32,7 @@ public class Universal
         }
     }
 
-    public static AsyncResult doAsync(final Runnable runnable)
+    public static AsyncResult doAsync(final AsyncRunnable runnable)
     {
         final Object lock = new Object();
         final AsyncResult result = new AsyncResult();
@@ -63,7 +49,6 @@ public class Universal
                 catch (Throwable ex)
                 {
                     result.setException(ex);
-                    result.setExceptionType(ex.getClass());
                 }
                 finally
                 {
