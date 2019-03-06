@@ -2,14 +2,29 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "check dir tree",
+            "type": "shell",
+            "linux": {
+                "args": [
+                    "echo Fail"
+                ]
+            },
+            "windows": {
+                "command": "${workspaceFolder}\\.vscode\\checkDirTree.bat"
+            }
+        },
+        {
+            "label": "build java",
             "type": "shell",
             "command": "javac",
             "linux": {
                 "args": [
                     "-d", "${workspaceFolder}/bin/production",
+                    "-h", "${workspaceFolder}/src/native",
                     "-sourcepath", "${workspaceFolder}/src",
                     "-bootclasspath", "${env:JAVA_HOME}/jre/lib/rt.jar",
+                    "-source", "1.6",
+                    "-target", "1.6",
                     "${workspaceFolder}/src/sk/pa3kc/mylibrary/*.java",
                     "${workspaceFolder}/src/sk/pa3kc/mylibrary/async/*.java",
                     "${workspaceFolder}/src/sk/pa3kc/mylibrary/myregex/*.java",
@@ -20,8 +35,11 @@
             "windows": {
                 "args": [
                     "-d", "${workspaceFolder}\\bin\\production",
+                    "-h", "${workspaceFolder}\\src\\native",
                     "-sourcepath", "${workspaceFolder}\\src",
                     "-bootclasspath", "${env:JAVA_HOME}\\jre\\lib\\rt.jar",
+                    "-source", "1.6",
+                    "-target", "1.6",
                     "${workspaceFolder}\\src\\sk\\pa3kc\\mylibrary\\*.java",
                     "${workspaceFolder}\\src\\sk\\pa3kc\\mylibrary\\async\\*.java",
                     "${workspaceFolder}\\src\\sk\\pa3kc\\mylibrary\\myregex\\*.java",
@@ -29,9 +47,26 @@
                     "${workspaceFolder}\\src\\sk\\pa3kc\\mylibrary\\util\\*.java"
                 ]
             },
-            "args": [
-                "-source", "1.6",
-                "-target", "1.6",
+            "dependsOn": [
+                "check dir tree"
+            ]
+        },
+        {
+            "label": "build project",
+            "type": "shell",
+            "linux": {
+                "command": "echo Fail"
+            },
+            "windows": {
+                "command": "${workspaceFolder}\\.vscode\\buildNatives.bat",
+                "args": [
+                    "${workspaceFolder}\\src\\native",
+                    "${workspaceFolder}\\bin\\production\\CmdColor",
+                    "${workspaceFolder}\\src\\native\\CmdColor"
+                ]
+            },
+            "dependsOn": [
+                "build java"
             ]
         },
         {
@@ -55,7 +90,7 @@
                 ]
             },
             "dependsOn": [
-                "build"
+                "build project"
             ],
             "group": {
                 "kind": "build",
