@@ -52,7 +52,7 @@
             ]
         },
         {
-            "label": "build project",
+            "label": "build natives",
             "type": "shell",
             "linux": {
                 "command": "echo Fail"
@@ -90,7 +90,7 @@
                 ]
             },
             "dependsOn": [
-                "build project"
+                "build natives"
             ],
             "group": {
                 "kind": "build",

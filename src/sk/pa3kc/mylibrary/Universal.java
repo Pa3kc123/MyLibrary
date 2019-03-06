@@ -3,11 +3,18 @@ package sk.pa3kc.mylibrary;
 import sk.pa3kc.mylibrary.async.AsyncResult;
 import sk.pa3kc.mylibrary.async.AsyncRunnable;
 import sk.pa3kc.mylibrary.net.Device;
+import sk.pa3kc.mylibrary.util.CmdColor;
 
 public class Universal
 {
     public static void main(String[] args)
     {
+        CmdColor instance = CmdColor.getInstance();
+        System.out.print(instance.RED + "This text should be red" + DefaultSystemPropertyStrings.LINE_SEPARATOR);
+        System.out.print(instance.GREEN + "This text should be green" + DefaultSystemPropertyStrings.LINE_SEPARATOR);
+        System.out.print(instance.BLUE + "This text should be blue" + DefaultSystemPropertyStrings.LINE_SEPARATOR);
+        System.out.print(instance.RESET);
+
         try
         {
             final String NEWLINE = DefaultSystemPropertyStrings.LINE_SEPARATOR;

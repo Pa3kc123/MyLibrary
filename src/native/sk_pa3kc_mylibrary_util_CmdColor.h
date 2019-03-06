@@ -9,10 +9,10 @@ extern "C" {
 #endif
 /*
  * Class:     sk_pa3kc_mylibrary_util_CmdColor
- * Method:    initColoring
+ * Method:    init
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_sk_pa3kc_mylibrary_util_CmdColor_initColoring
+JNIEXPORT void JNICALL Java_sk_pa3kc_mylibrary_util_CmdColor_init
   (JNIEnv *, jclass);
 
 #ifdef __cplusplus
