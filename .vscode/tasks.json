@@ -2,96 +2,17 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "check dir tree",
-            "type": "shell",
-            "linux": {
-                "args": [
-                    "echo Fail"
-                ]
-            },
-            "windows": {
-                "command": "${workspaceFolder}\\.vscode\\checkDirTree.bat"
-            }
-        },
-        {
-            "label": "build java",
-            "type": "shell",
-            "command": "javac",
-            "linux": {
-                "args": [
-                    "-d", "${workspaceFolder}/bin/production",
-                    "-h", "${workspaceFolder}/src/native",
-                    "-sourcepath", "${workspaceFolder}/src",
-                    "-bootclasspath", "${env:JAVA_HOME}/jre/lib/rt.jar",
-                    "-source", "1.6",
-                    "-target", "1.6",
-                    "${workspaceFolder}/src/sk/pa3kc/mylibrary/*.java",
-                    "${workspaceFolder}/src/sk/pa3kc/mylibrary/async/*.java",
-                    "${workspaceFolder}/src/sk/pa3kc/mylibrary/myregex/*.java",
-                    "${workspaceFolder}/src/sk/pa3kc/mylibrary/net/*.java",
-                    "${workspaceFolder}/src/sk/pa3kc/mylibrary/util/*.java"
-                ]
-            },
-            "windows": {
-                "args": [
-                    "-d", "${workspaceFolder}\\bin\\production",
-                    "-h", "${workspaceFolder}\\src\\native",
-                    "-sourcepath", "${workspaceFolder}\\src",
-                    "-bootclasspath", "${env:JAVA_HOME}\\jre\\lib\\rt.jar",
-                    "-source", "1.6",
-                    "-target", "1.6",
-                    "${workspaceFolder}\\src\\sk\\pa3kc\\mylibrary\\*.java",
-                    "${workspaceFolder}\\src\\sk\\pa3kc\\mylibrary\\async\\*.java",
-                    "${workspaceFolder}\\src\\sk\\pa3kc\\mylibrary\\myregex\\*.java",
-                    "${workspaceFolder}\\src\\sk\\pa3kc\\mylibrary\\net\\*.java",
-                    "${workspaceFolder}\\src\\sk\\pa3kc\\mylibrary\\util\\*.java"
-                ]
-            },
-            "dependsOn": [
-                "check dir tree"
-            ]
-        },
-        {
-            "label": "build natives",
-            "type": "shell",
-            "linux": {
-                "command": "echo Fail"
-            },
-            "windows": {
-                "command": "${workspaceFolder}\\.vscode\\buildNatives.bat",
-                "args": [
-                    "${workspaceFolder}\\src\\native",
-                    "${workspaceFolder}\\bin\\production\\CmdColor",
-                    "${workspaceFolder}\\src\\native\\CmdColor"
-                ]
-            },
-            "dependsOn": [
-                "build java"
-            ]
-        },
-        {
             "label": "generate jar",
             "type": "shell",
-            "command": "jar",
             "linux": {
-                "args": [
-                    "-cfve",
-                    "bin/MyLibrary.jar",
-                    "sk.pa3kc.mylibrary.Universal",
-                    "-C", "bin/production", "."
-                ]
+                "command": "echo FAIL",
             },
             "windows": {
-                "args": [
-                    "-cfve",
-                    "bin\\MyLibrary.jar",
-                    "sk.pa3kc.mylibrary.Universal",
-                    "-C", "bin\\production", "."
-                ]
+                "options": {
+                    "cwd": "${workspaceFolder}\\.vscode"
+                },
+                "command": "build.bat",
             },
-            "dependsOn": [
-                "build natives"
-            ],
             "group": {
                 "kind": "build",
                 "isDefault": true

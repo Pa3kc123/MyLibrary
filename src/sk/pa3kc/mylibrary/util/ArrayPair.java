@@ -59,6 +59,12 @@ public class ArrayPair<T> implements Iterable<T>
             {
                 return arr1[index++];
             }
+
+            @Override
+            public void remove()
+            {
+                
+            }
         };
     }
 }
