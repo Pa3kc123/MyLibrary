@@ -2,22 +2,28 @@ package sk.pa3kc.mylibrary;
 
 import sk.pa3kc.mylibrary.async.AsyncResult;
 import sk.pa3kc.mylibrary.async.AsyncRunnable;
+import sk.pa3kc.mylibrary.cmd.CmdColor;
+import sk.pa3kc.mylibrary.cmd.CmdUtils;
 import sk.pa3kc.mylibrary.net.Device;
-import sk.pa3kc.mylibrary.util.CmdColor;
 
 public class Universal
 {
     public static void main(String[] args)
     {
-        CmdColor instance = CmdColor.getInstance();
-        System.out.print(instance.RED + "This text should be red" + DefaultSystemPropertyStrings.LINE_SEPARATOR);
-        System.out.print(instance.GREEN + "This text should be green" + DefaultSystemPropertyStrings.LINE_SEPARATOR);
-        System.out.print(instance.BLUE + "This text should be blue" + DefaultSystemPropertyStrings.LINE_SEPARATOR);
-        System.out.print(instance.RESET);
+        final String NEWLINE = DefaultSystemPropertyStrings.LINE_SEPARATOR;
+
+        CmdUtils instance = CmdUtils.getInstance();
+
+        instance.setColor(CmdColor.RED);
+        instance.print("This text should be red" + NEWLINE);
+        instance.setColor(CmdColor.GREEN);
+        instance.print("This text should be green" + NEWLINE);
+        instance.setColor(CmdColor.BLUE);
+        instance.print("This text should be blue" + NEWLINE);
+        instance.print(CmdColor.RESET);
 
         try
         {
-            final String NEWLINE = DefaultSystemPropertyStrings.LINE_SEPARATOR;
             final Device[] devices = Device.getUsableDevices();
 
             for (Device device : devices)
@@ -80,5 +86,54 @@ public class Universal
         }
 
         return result;
+    }
+
+    /**
+     * Method from {@link java.lang.StrictMath}
+     */
+    public static int toIntExact(long value) throws ArithmeticException
+    {
+        if ((int)value != value)
+            throw new ArithmeticException("integer overflow");
+        else return (int)value;
+    }
+
+    /**
+     * Returns lowest value from passed values
+     * @param values Values to compare
+     * @return Lowest value from array, -1 if array.length is 0
+     */
+    public static int lowest(int... values)
+    {
+        if (values.length == 0) return -1;
+
+        int result = 0x7FFFFFFF;
+        for (int value : values)
+            result = result > value ? value : result;
+
+        return result;
+    }
+
+    /**
+     * Returns highest value from passed values
+     * @param values Values to compare
+     * @return Highest value from array, -1 if array.length is 0
+     */
+    public static int highest(int... values)
+    {
+        if (values.length == 0) return -1;
+
+        int result = 0x80000000;
+        for (int value : values)
+            result = result < value ? value : result;
+
+        return result;
+    }
+
+    public static float map(float val, float sourceMinRange, float sourceMaxRange, float targetMinRange, float targetMaxRange) throws ArithmeticException
+    {
+        if (sourceMinRange > sourceMaxRange) throw new ArithmeticException("sourceMinRange !< sourceMaxRange");
+        if (val < sourceMinRange || val > sourceMaxRange) throw new ArithmeticException("sourceMinRange !< val !< sourceMaxRange");
+        return ((val - sourceMinRange) / (sourceMaxRange - sourceMinRange)) * (targetMinRange - targetMaxRange) + targetMinRange;
     }
 }

@@ -1,1 +1,1 @@
-sk.pa3kc.mylibrary.util.CmdColor
+sk.pa3kc.mylibrary.cmd.CmdUtils

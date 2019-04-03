@@ -5,20 +5,14 @@
             "type": "java",
             "name": "Debug Universal<MyLibrary>",
             "request": "launch",
+            "projectName": "MyLibrary"
             "windows": {
-                "cwd": "${workspaceFolder}\\bin\\production",
-                "classPaths": [
-                    "${workspaceFolder}\\bin\\production"
-                ]
+                "cwd": "${workspaceFolder}\\bin",
             },
             "linux": {
-                "cwd": "${workspaceFolder}/bin/production",
-                "classPaths": [
-                    "${workspaceFolder}/bin/production"
-                ]
+                "cwd": "${workspaceFolder}/bin",
             },
             "mainClass": "sk.pa3kc.mylibrary.Universal",
-            "projectName": "MyLibrary"
         }
     ]
 }

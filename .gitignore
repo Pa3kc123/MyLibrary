@@ -1,2 +1,3 @@
-bin/production/*
-bin/MyLibrary.jar
+bin/
+src/native/*.h
+MyLibrary.jar
