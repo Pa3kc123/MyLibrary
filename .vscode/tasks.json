@@ -5,7 +5,10 @@
             "label": "generate jar",
             "type": "shell",
             "linux": {
-                "command": "echo FAIL",
+                "options": {
+                    "cwd": "${workspaceFolder}/.vscode"
+                },
+                "command": "./build.sh",
             },
             "windows": {
                 "options": {

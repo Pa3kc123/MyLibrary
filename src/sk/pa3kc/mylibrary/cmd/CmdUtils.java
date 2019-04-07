@@ -4,23 +4,24 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
-import java.util.Locale;
 
 import sk.pa3kc.mylibrary.DefaultSystemPropertyStrings;
 import sk.pa3kc.mylibrary.util.StreamUtils;
 
-public class CmdUtils extends PrintStream
+public class CmdUtils
 {
+    static final char escCode = 0x1B;
+
     private static CmdUtils instance = null;
+
     private CmdColor color = null;
+    private OutputStream stream = System.out;
 
-    public static CmdUtils getInstance() { return instance == null ? (instance = new CmdUtils(System.out)) : instance; }
-    static CmdUtils getSecretInstance() { return instance; }
+    public static CmdUtils getInstance() { return instance == null ? (instance = new CmdUtils()) : instance; }
+    public static boolean instanceExists() { return instance != null; }
 
-    private CmdUtils(OutputStream out)
+    private CmdUtils()
     {
-        super(out);
         if (DefaultSystemPropertyStrings.OS_NAME.contains("Windows") == true)
         {
             StringBuilder builder = new StringBuilder();
@@ -79,17 +80,39 @@ public class CmdUtils extends PrintStream
     }
 
     public CmdColor getColor() { return this.color; }
+    public OutputStream getStream() { return this.stream; }
 
-    public void setColor(CmdColor color) { this.color = color; }
+    public void setColor(CmdColor value) { this.onColorChanged(this.color, value); }
+    public void setStream(OutputStream value) { this.stream = value; }
 
     public static native void init();
 
-    public void moveCursorTo1(int x, int y) { super.printf(Locale.getDefault(), "\033[%d;%dH", x, y); }
-    public void moveCursorTo2(int x, int y) { super.printf(Locale.getDefault(), "\033[%d;%df", x, y); }
-    public void moveUp(int count) { super.printf(Locale.getDefault(), "\033[%dA", count); }
-    public void moveDown(int count) { super.printf(Locale.getDefault(), "\033[%dB", count); }
-    public void moveRight(int count) { super.printf(Locale.getDefault(), "\033[%dC", count); }
-    public void moveLeft(int count) { super.printf(Locale.getDefault(), "\033[%dD", count); }
-    public void clearScreen() { super.print("\033[2J"); }
-    public void clearLine() { super.print("\033[K"); }
+    public void onColorChanged(CmdColor oldColor, CmdColor newColor)
+    {
+        this.print(newColor);
+        this.color = newColor;
+    }
+
+    public void moveCursorTo(int x, int y) { this.print("%c[%d;%dH", escCode, x, y); }
+    public void moveUp(int count) { this.print("%c[%dA", escCode, count); }
+    public void moveDown(int count) { this.print("%c[%dB", escCode, count); }
+    public void moveRight(int count) { this.print("%c[%dC", escCode, count); }
+    public void moveLeft(int count) { this.print("%c[%dD", escCode, count); }
+    public void clearScreen() { this.print("%c[2J", escCode); }
+    public void clearLine() { this.print("%c[K", escCode); }
+
+    private void print(CmdColor color) { this.print(color.code); }
+    private void print(String format, Object... args) { this.print(String.format(format, args)); }
+    private void print(String text)
+    {
+        try
+        {
+            this.stream.write(text.getBytes());
+            this.stream.flush();
+        }
+        catch (Throwable ex)
+        {
+            ex.printStackTrace();
+        }
+    }
 }

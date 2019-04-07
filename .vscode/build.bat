@@ -21,7 +21,7 @@ IF EXIST %binDir% (rd %binDir% /s /q)
 IF EXIST %nativeDir%\*.h (del %nativeDir%\*.h /q)
 
 echo Recreating directory tree
-mkdir %binDir%
+if NOT EXIST %binDir% (mkdir %binDir%)
 
 echo Compiling java files
 dir /s /B %srcDir%\*.java > %workspaceDir%\.vscode\javaFiles.txt

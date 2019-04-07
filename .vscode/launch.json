@@ -5,7 +5,7 @@
             "type": "java",
             "name": "Debug Universal<MyLibrary>",
             "request": "launch",
-            "projectName": "MyLibrary"
+            "projectName": "MyLibrary",
             "windows": {
                 "cwd": "${workspaceFolder}\\bin",
             },

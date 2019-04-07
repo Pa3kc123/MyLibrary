@@ -12,15 +12,13 @@ public class Universal
     {
         final String NEWLINE = DefaultSystemPropertyStrings.LINE_SEPARATOR;
 
-        CmdUtils instance = CmdUtils.getInstance();
-
-        instance.setColor(CmdColor.RED);
-        instance.print("This text should be red" + NEWLINE);
-        instance.setColor(CmdColor.GREEN);
-        instance.print("This text should be green" + NEWLINE);
-        instance.setColor(CmdColor.BLUE);
-        instance.print("This text should be blue" + NEWLINE);
-        instance.print(CmdColor.RESET);
+        CmdUtils.getInstance().setColor(CmdColor.RED);
+        System.out.print("This text should be red" + NEWLINE);
+        CmdUtils.getInstance().setColor(CmdColor.GREEN);
+        System.out.print("This text should be green" + NEWLINE);
+        CmdUtils.getInstance().setColor(CmdColor.BLUE);
+        System.out.print("This text should be blue" + NEWLINE);
+        System.out.print(CmdColor.RESET);
 
         try
         {
