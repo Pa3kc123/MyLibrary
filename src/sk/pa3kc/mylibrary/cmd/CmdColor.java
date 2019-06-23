@@ -77,7 +77,7 @@ public enum CmdColor
     public final String code;
     private CmdColor(String code)
     {
-        if (CmdUtils.instanceExists() == true) throw new IllegalStateException("CmdUtils must by initialized");
+        if (CmdUtils.instanceExists() == false) throw new IllegalStateException("CmdUtils must by initialized");
         this.code = CmdUtils.escCode + code;
     }
     @Override

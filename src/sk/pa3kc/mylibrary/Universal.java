@@ -1,10 +1,11 @@
 package sk.pa3kc.mylibrary;
 
-import sk.pa3kc.mylibrary.async.AsyncResult;
-import sk.pa3kc.mylibrary.async.AsyncRunnable;
 import sk.pa3kc.mylibrary.cmd.CmdColor;
 import sk.pa3kc.mylibrary.cmd.CmdUtils;
+import sk.pa3kc.mylibrary.enums.ClassCode;
 import sk.pa3kc.mylibrary.net.Device;
+import sk.pa3kc.mylibrary.pojo.ObjectPointer;
+import sk.pa3kc.mylibrary.util.arr.ArrayUtils;
 
 public class Universal
 {
@@ -20,6 +21,9 @@ public class Universal
         System.out.print("This text should be blue" + NEWLINE);
         System.out.print(CmdColor.RESET);
 
+        ObjectPointer<char[]> pointer = new ObjectPointer<char[]>("you".toCharArray());
+        ArrayUtils.add(new char[0], pointer, 'r');
+        
         try
         {
             final Device[] devices = Device.getUsableDevices();
@@ -43,51 +47,14 @@ public class Universal
         }
     }
 
-    public static AsyncResult doAsync(final AsyncRunnable runnable)
-    {
-        final Object lock = new Object();
-        final AsyncResult result = new AsyncResult();
-
-        new Thread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                try
-                {
-                    runnable.run();
-                }
-                catch (Throwable ex)
-                {
-                    result.setException(ex);
-                }
-                finally
-                {
-                    synchronized (lock)
-                    {
-                        lock.notify();
-                    }
-                }
-            }
-        }).start();
-
-        synchronized (lock)
-        {
-            try
-            {
-                lock.wait();
-            }
-            catch (Throwable ex)
-            {
-                ex.printStackTrace();
-            }
-        }
-
-        return result;
-    }
-
     /**
-     * Method from {@link java.lang.StrictMath}
+     * Returns the value of the {@code long} argument;
+     * throwing an exception if the value overflows an {@code int}.
+     *
+     * @param value the long value
+     * @return the argument as an int
+     * @throws ArithmeticException if the {@code argument} overflows an int
+     * @since 1.6
      */
     public static int toIntExact(long value) throws ArithmeticException
     {
@@ -101,7 +68,7 @@ public class Universal
      * @param values Values to compare
      * @return Lowest value from array, -1 if array.length is 0
      */
-    public static int lowest(int... values)
+    public static int min(int... values)
     {
         if (values.length == 0) return -1;
 
@@ -117,7 +84,7 @@ public class Universal
      * @param values Values to compare
      * @return Highest value from array, -1 if array.length is 0
      */
-    public static int highest(int... values)
+    public static int max(int... values)
     {
         if (values.length == 0) return -1;
 

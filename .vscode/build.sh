@@ -55,4 +55,4 @@ fi
 
 #Generating jar with all builded files
 echo Generating jar
-$jar -cfve $workspaceDir/MyLibrary.jar sk.pa3kc.mylibrary.Universal -C $binDir .
+$jar -cfe $workspaceDir/MyLibrary.jar sk.pa3kc.mylibrary.Universal -C $binDir .
