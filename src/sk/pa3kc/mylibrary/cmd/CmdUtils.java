@@ -7,18 +7,18 @@ import java.io.OutputStream;
 
 import sk.pa3kc.mylibrary.DefaultSystemPropertyStrings;
 import sk.pa3kc.mylibrary.util.StreamUtils;
+import sk.pa3kc.mylibrary.util.StringUtils;
 
 public class CmdUtils
 {
     static final char escCode = 0x1B;
 
-    private static CmdUtils instance = null;
+    static CmdUtils instance = null;
 
     private CmdColor color = null;
     private OutputStream stream = System.out;
 
-    public static CmdUtils getInstance() { return instance == null ? (instance = new CmdUtils()) : instance; }
-    public static boolean instanceExists() { return instance != null; }
+    static CmdUtils getInstance() { return instance == null ? (instance = new CmdUtils()) : instance; }
 
     private CmdUtils()
     {
@@ -29,7 +29,7 @@ public class CmdUtils
             builder.append(DefaultSystemPropertyStrings.OS_ARCH.equals("amd64") == true ? 64 : 32);
             builder.append(".dll");
             String libName = builder.toString();
-            
+
             builder.delete(0, builder.length());
             builder.append(DefaultSystemPropertyStrings.JAVA_IO_TMPDIR);
             builder.append(DefaultSystemPropertyStrings.FILE_SEPARATOR);
@@ -51,7 +51,7 @@ public class CmdUtils
                     }
                     resource = this.getClass().getClassLoader().getResourceAsStream(libName);
                     stream = new FileOutputStream(installedLibFile);
-    
+
                     byte[] buffer = new byte[1024];
                     for (int checksum = resource.read(buffer); checksum != -1; checksum = resource.read(buffer))
                         stream.write(buffer);
@@ -79,30 +79,30 @@ public class CmdUtils
         }
     }
 
-    public CmdColor getColor() { return this.color; }
-    public OutputStream getStream() { return this.stream; }
+    public CmdColor getColorX() { return this.color; }
+    public OutputStream getStreamX() { return this.stream; }
 
-    public void setColor(CmdColor value) { this.onColorChanged(this.color, value); }
-    public void setStream(OutputStream value) { this.stream = value; }
+    private void setColorX(CmdColor value) { this.onColorChanged(this.color, value); }
+    private void setStreamX(OutputStream value) { this.stream = value; }
 
     public static native void init();
 
-    public void onColorChanged(CmdColor oldColor, CmdColor newColor)
+    private void onColorChanged(CmdColor oldColor, CmdColor newColor)
     {
         this.print(newColor);
         this.color = newColor;
     }
 
-    public void moveCursorTo(int x, int y) { this.print("%c[%d;%dH", escCode, x, y); }
-    public void moveUp(int count) { this.print("%c[%dA", escCode, count); }
-    public void moveDown(int count) { this.print("%c[%dB", escCode, count); }
-    public void moveRight(int count) { this.print("%c[%dC", escCode, count); }
-    public void moveLeft(int count) { this.print("%c[%dD", escCode, count); }
-    public void clearScreen() { this.print("%c[2J", escCode); }
-    public void clearLine() { this.print("%c[K", escCode); }
+    private void moveCursorToX(int x, int y) { this.print(StringUtils.build(escCode, '[', x, ';', y, 'H')); }
+    private void moveUpX(int count) { this.print(StringUtils.build(escCode, '[', count, 'A')); }
+    private void moveDownX(int count) { this.print(StringUtils.build(escCode, '[', count, 'B')); }
+    private void moveRightX(int count) { this.print(StringUtils.build(escCode, '[', count, 'C')); }
+    private void moveLeftX(int count) { this.print(StringUtils.build(escCode, '[', count, 'D')); }
+    private void clearScreenX() { this.print(StringUtils.build(escCode, "[2J")); }
+    private void clearLineX() { this.print(StringUtils.build(escCode, "[K")); }
+    private void resetColorX() { this.print(CmdColor.RESET); }
 
     private void print(CmdColor color) { this.print(color.code); }
-    private void print(String format, Object... args) { this.print(String.format(format, args)); }
     private void print(String text)
     {
         try
@@ -115,4 +115,19 @@ public class CmdUtils
             ex.printStackTrace();
         }
     }
+
+    public static CmdColor getColor() { return CmdUtils.getInstance().getColorX(); }
+    public static OutputStream getStream() { return CmdUtils.getInstance().getStreamX(); }
+
+    public static void setColor(CmdColor value) { CmdUtils.getInstance().setColorX(value); }
+    public static void setStream(OutputStream value) { CmdUtils.getInstance().setStreamX(value); }
+
+    public static void moveCursorTo(int x, int y) { CmdUtils.getInstance().moveCursorToX(x, y); }
+    public static void moveUp(int count) { CmdUtils.getInstance().moveUpX(count); }
+    public static void moveDown(int count) { CmdUtils.getInstance().moveDownX(count); }
+    public static void moveRight(int count) { CmdUtils.getInstance().moveRightX(count); }
+    public static void moveLeft(int count) { CmdUtils.getInstance().moveLeftX(count); }
+    public static void clearScreen() { CmdUtils.getInstance().clearScreenX(); }
+    public static void clearLine() { CmdUtils.getInstance().clearLineX(); }
+    public static void resetColor() { CmdUtils.getInstance().resetColorX(); }
 }

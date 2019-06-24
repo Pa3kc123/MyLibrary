@@ -36,6 +36,6 @@ echo Building 64-bit dll
 %gcc64% -I"%jdk6_64%\include" -I"%jdk6_64%\include\win32" -I%nativeDir% -shared -o %binDir%\%dllName%64.dll %nativeDir%\%dllName%.c
 
 echo Generating jar
-%jar% -cfve %workspaceDir%\MyLibrary.jar sk.pa3kc.mylibrary.Universal -C %binDir% .
+%jar% -cfe %workspaceDir%\MyLibrary.jar sk.pa3kc.mylibrary.Universal -C %binDir% .
 
 endlocal

@@ -13,6 +13,7 @@ public enum ClassCode
     DOUBLE(8);
 
     public final Class<?> type;
+    public final boolean primitive;
     private ClassCode(int code)
     {
         switch (code)
@@ -25,7 +26,11 @@ public enum ClassCode
             case 6: this.type = long.class; break;
             case 7: this.type = float.class; break;
             case 8: this.type = double.class; break;
-            default: this.type = Object.class; break;
+            default:
+                this.type = Object.class;
+                this.primitive = false;
+            return;
         }
+        this.primitive = true;
     }
 }

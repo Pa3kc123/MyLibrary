@@ -2,10 +2,7 @@ package sk.pa3kc.mylibrary;
 
 import sk.pa3kc.mylibrary.cmd.CmdColor;
 import sk.pa3kc.mylibrary.cmd.CmdUtils;
-import sk.pa3kc.mylibrary.enums.ClassCode;
 import sk.pa3kc.mylibrary.net.Device;
-import sk.pa3kc.mylibrary.pojo.ObjectPointer;
-import sk.pa3kc.mylibrary.util.arr.ArrayUtils;
 
 public class Universal
 {
@@ -13,17 +10,14 @@ public class Universal
     {
         final String NEWLINE = DefaultSystemPropertyStrings.LINE_SEPARATOR;
 
-        CmdUtils.getInstance().setColor(CmdColor.RED);
+        CmdUtils.setColor(CmdColor.RED);
         System.out.print("This text should be red" + NEWLINE);
-        CmdUtils.getInstance().setColor(CmdColor.GREEN);
+        CmdUtils.setColor(CmdColor.GREEN);
         System.out.print("This text should be green" + NEWLINE);
-        CmdUtils.getInstance().setColor(CmdColor.BLUE);
+        CmdUtils.setColor(CmdColor.BLUE);
         System.out.print("This text should be blue" + NEWLINE);
-        System.out.print(CmdColor.RESET);
+        CmdUtils.resetColor();
 
-        ObjectPointer<char[]> pointer = new ObjectPointer<char[]>("you".toCharArray());
-        ArrayUtils.add(new char[0], pointer, 'r');
-        
         try
         {
             final Device[] devices = Device.getUsableDevices();

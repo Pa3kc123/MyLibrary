@@ -10,6 +10,7 @@ public class StreamUtils
         {
             for (Closeable stream : streams)
             {
+                if (stream == null) continue;
                 try
                 {
                     stream.close();
