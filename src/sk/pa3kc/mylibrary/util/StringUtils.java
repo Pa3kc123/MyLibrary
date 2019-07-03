@@ -2,20 +2,22 @@ package sk.pa3kc.mylibrary.util;
 
 import java.lang.reflect.Array;
 
+import sk.pa3kc.mylibrary.pojo.ObjectPointer;
+
 public class StringUtils
 {
     private StringUtils() {}
 
-    private static void buildX(String text, Object value)
+    private static void buildX(ObjectPointer<String> pointer, Object value)
     {
         if (value.getClass().isArray() == false)
         {
-            text.concat(value.toString());
+            pointer.value = pointer.value.concat(value.toString());
             return;
         }
 
         for (int i = 0; i < Array.getLength(value); i++)
-            buildX(text, Array.get(value, i));
+            buildX(pointer, Array.get(value, i));
     }
 
     public static String build(Object... values)
@@ -25,7 +27,11 @@ public class StringUtils
         for (Object value : values)
         {
             if (value.getClass().isArray() == true)
-                buildX(result, value);
+            {
+                ObjectPointer<String> pointer = new ObjectPointer<String>("");
+                buildX(pointer, value);
+                result = result.concat(pointer.value);
+            }
             else
                 result.concat(value.toString());
         }

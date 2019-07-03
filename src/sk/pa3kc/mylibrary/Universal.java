@@ -3,9 +3,6 @@ package sk.pa3kc.mylibrary;
 import sk.pa3kc.mylibrary.cmd.CmdColor;
 import sk.pa3kc.mylibrary.cmd.CmdUtils;
 import sk.pa3kc.mylibrary.net.Device;
-import sk.pa3kc.mylibrary.pojo.ObjectPointer;
-import sk.pa3kc.mylibrary.util.ArrayUtils;
-import sk.pa3kc.mylibrary.util.StringUtils;
 
 public class Universal
 {
@@ -20,10 +17,6 @@ public class Universal
         CmdUtils.setColor(CmdColor.BLUE);
         System.out.print("This text should be blue" + NEWLINE);
         CmdUtils.resetColor();
-
-        ObjectPointer<Character[]> pointer = new ObjectPointer<Character[]>(ArrayUtils.wrap("you".toCharArray()));
-        ArrayUtils.add(pointer, new Character('r'));
-        System.out.println(StringUtils.build(ArrayUtils.unwrap(pointer.value)));
 
         try
         {
