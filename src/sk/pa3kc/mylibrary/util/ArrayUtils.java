@@ -58,14 +58,30 @@ public class ArrayUtils
         return results;
     }
 
-    public static Object[] cast(Class<?> type, Object[] arr) throws ClassCastException
+    private static void castX(Class<?> castType, Object source, Object output)
+    {
+        if (source.getClass().isArray() == false) return;
+        int dimCount = getDimensionCount(source);
+
+        for (int i = 0; i < Array.getLength(source) && i < Array.getLength(output); i++)
+        {
+            castX(castType, Array.get(source, i), Array.get(output, i));
+
+            if (dimCount == 1) Array.set(output, i, Array.get(source, i));
+        }
+    }
+    @SuppressWarnings("unchecked")
+    public static <T> T cast(Class<T> type, Object arr) throws ClassCastException
     {
         if (type == null) throw new NullPointerException("type cannot be null");
+        if (type == arr.getClass()) return (T)arr;
+        if (arr.getClass().isArray() == false)
+            try { return type.cast(arr); } catch (ClassCastException ex) { return null; }
 
-        Object[] result = (Object[])Array.newInstance(type, arr.length);
+        Class<?> castType = getComponentType(type);
+        T result = (T)Array.newInstance(castType, createDimensionMap(arr));
 
-        for (int i = 0; i < arr.length; i++)
-            result[i] = type.cast(Array.get(arr, i));
+        castX(castType, arr, result);
 
         return result;
     }
@@ -102,26 +118,28 @@ public class ArrayUtils
         return map;
     }
 
-    private static void deepArrCopyX(Object source, ObjectPointer<Object> output)
+    @SuppressWarnings("unchecked")
+    private static <T> void deepArrCopyX(T source, ObjectPointer<T> output)
     {
-        if (source.getClass().isArray() == true)
-            for (int i = 0; i < Array.getLength(source); i++)
-            {
-                ObjectPointer<Object> pointer = new ObjectPointer<Object>(Array.get(output.value, i));
-                deepArrCopyX(Array.get(source, i), pointer);
-                Array.set(output.value, i, pointer.value);
-            }
-        else output.value = source;
+        if (source.getClass().isArray() == false)
+        {
+            output.value = source;
+            return;
+        }
+
+        for (int i = 0; i < Array.getLength(source); i++)
+        {
+            ObjectPointer<T> pointer = new ObjectPointer<T>((T)Array.get(output.value, i));
+            deepArrCopyX((T)Array.get(source, i), pointer);
+            Array.set(output.value, i, pointer.value);
+        }
     }
-    public static Object deepArrCopy(Object arr)
+    @SuppressWarnings("unchecked")
+    public static <T> T deepArrCopy(T arr)
     {
         if (arr.getClass().isArray() == false) throw new IllegalArgumentException("arr must be array type");
 
-        Class<?> arrComponentType = getComponentType(arr);
-        int[] map = createDimensionMap(arr);
-        Object arrObject = Array.newInstance(arrComponentType, map);
-
-        ObjectPointer<Object> pointer = new ObjectPointer<Object>(arrObject);
+        ObjectPointer<T> pointer = new ObjectPointer<T>((T)Array.newInstance(getComponentType(arr), createDimensionMap(arr)));
         deepArrCopyX(arr, pointer);
 
         return pointer.value;
@@ -167,14 +185,22 @@ public class ArrayUtils
         return indexes;
     }
 
+    public static Class<?> getComponentType(Class<?> arr)
+    {
+        if (arr == null) throw new NullPointerException("arr cannot be null");
+        if (arr.isArray() == false) return arr;
+
+        while ((arr = arr.getComponentType()).isArray() == true) {}
+
+        return arr;
+    }
     public static Class<?> getComponentType(Object arr)
     {
         if (arr == null) throw new NullPointerException("arr cannot be null");
 
         Class<?> type = arr.getClass();
 
-        while (type.isArray() == true)
-            type = type.getComponentType();
+        while ((type = type.getComponentType()).isArray() == true) {}
 
         return type;
     }
@@ -277,159 +303,6 @@ public class ArrayUtils
     public static Object wrap(Object arr)
     {
         Class<?> type = getComponentType(arr);
-        type = type.isPrimitive() == true ? ClassUtils.getWrapperType(type) : ClassUtils.getPrimitiveType(type);
-
-        Object result = cast(type, deepArrCopy(arr));
-
-        return null;
+        return cast(type.isPrimitive() == true ? ClassUtils.getWrapperType(type) : ClassUtils.getPrimitiveType(type), deepArrCopy(arr));
     }
-
-    //region Wrappers
-    public static Boolean[] wrap(boolean[] arr)
-    {
-        Boolean[] result = new Boolean[arr.length];
-
-        for (int i = 0; i < arr.length; i++)
-            result[i] = new Boolean(arr[i]);
-
-        return result;
-    }
-    public static Byte[] wrap(byte[] arr)
-    {
-        Byte[] result = new Byte[arr.length];
-
-        for (int i = 0; i < arr.length; i++)
-            result[i] = new Byte(arr[i]);
-
-        return result;
-    }
-    public static Character[] wrap(char[] arr)
-    {
-        Character[] result = new Character[arr.length];
-
-        for (int i = 0; i < arr.length; i++)
-            result[i] = new Character(arr[i]);
-
-        return result;
-    }
-    public static Short[] wrap(short[] arr)
-    {
-        Short[] result = new Short[arr.length];
-
-        for (int i = 0; i < arr.length; i++)
-            result[i] = new Short(arr[i]);
-
-        return result;
-    }
-    public static Integer[] wrap(int[] arr)
-    {
-        Integer[] result = new Integer[arr.length];
-
-        for (int i = 0; i < arr.length; i++)
-            result[i] = new Integer(arr[i]);
-
-        return result;
-    }
-    public static Long[] wrap(long[] arr)
-    {
-        Long[] result = new Long[arr.length];
-
-        for (int i = 0; i < arr.length; i++)
-            result[i] = new Long(arr[i]);
-
-        return result;
-    }
-    public static Float[] wrap(float[] arr)
-    {
-        Float[] result = new Float[arr.length];
-
-        for (int i = 0; i < arr.length; i++)
-            result[i] = new Float(arr[i]);
-
-        return result;
-    }
-    public static Double[] wrap(double[] arr)
-    {
-        Double[] result = new Double[arr.length];
-
-        for (int i = 0; i < arr.length; i++)
-            result[i] = new Double(arr[i]);
-
-        return result;
-    }
-    //endregion
-    //region Unwrappers
-    public static boolean[] unwrap(Boolean[] arr)
-    {
-        boolean[] result = new boolean[arr.length];
-
-        for (int i = 0; i < arr.length; i++)
-            result[i] = arr[i].booleanValue();
-
-        return result;
-    }
-    public static byte[] unwrap(Byte[] arr)
-    {
-        byte[] result = new byte[arr.length];
-
-        for (int i = 0; i < arr.length; i++)
-            result[i] = arr[i].byteValue();
-
-        return result;
-    }
-    public static char[] unwrap(Character[] arr)
-    {
-        char[] result = new char[arr.length];
-
-        for (int i = 0; i < arr.length; i++)
-            result[i] = arr[i].charValue();
-
-        return result;
-    }
-    public static short[] unwrap(Short[] arr)
-    {
-        short[] result = new short[arr.length];
-
-        for (int i = 0; i < arr.length; i++)
-            result[i] = arr[i].shortValue();
-
-        return result;
-    }
-    public static int[] unwrap(Integer[] arr)
-    {
-        int[] result = new int[arr.length];
-
-        for (int i = 0; i < arr.length; i++)
-            result[i] = arr[i].intValue();
-
-        return result;
-    }
-    public static long[] unwrap(Long[] arr)
-    {
-        long[] result = new long[arr.length];
-
-        for (int i = 0; i < arr.length; i++)
-            result[i] = arr[i].longValue();
-
-        return result;
-    }
-    public static float[] unwrap(Float[] arr)
-    {
-        float[] result = new float[arr.length];
-
-        for (int i = 0; i < arr.length; i++)
-            result[i] = arr[i].floatValue();
-
-        return result;
-    }
-    public static double[] unwrap(Double[] arr)
-    {
-        double[] result = new double[arr.length];
-
-        for (int i = 0; i < arr.length; i++)
-            result[i] = arr[i].doubleValue();
-
-        return result;
-    }
-    //#endregion
 }
