@@ -1,17 +1,14 @@
 package sk.pa3kc.mylibrary.pojo;
 
-public class ObjectPointer<T>
-{
+public class ObjectPointer<T> {
     public T value;
 
-    public ObjectPointer(T value)
-    {
+    public ObjectPointer(T value) {
         this.value = value;
     }
 
     @SuppressWarnings("unchecked")
-    public <E> ObjectPointer<E> as(Class<E> type) throws ClassCastException
-    {
+    public <E> ObjectPointer<E> as(Class<E> type) throws ClassCastException {
         return new ObjectPointer<E>((E)value);
     }
 

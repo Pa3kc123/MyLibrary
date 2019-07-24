@@ -4,12 +4,10 @@ import java.lang.reflect.Array;
 
 import sk.pa3kc.mylibrary.pojo.ObjectPointer;
 
-public class ArrayUtils
-{
+public class ArrayUtils {
     private ArrayUtils() {}
 
-    public static <T> boolean add(ObjectPointer<T[]> pointer, T value)
-    {
+    public static <T> boolean add(ObjectPointer<T[]> pointer, T value) {
         if (pointer == null) throw new NullPointerException("pointer cannot be null");
         if (pointer.value == null) throw new NullPointerException("value inside of pointer cannot be null");
         if (value == null) return false;
@@ -24,14 +22,12 @@ public class ArrayUtils
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> boolean[] addAll(ObjectPointer<T[]> pointer, T... values)
-    {
+    public static <T> boolean[] addAll(ObjectPointer<T[]> pointer, T... values) {
         if (pointer == null) throw new NullPointerException("pointer cannot be null");
         if (pointer.value == null) throw new NullPointerException("value inside of pointer cannot be null");
         if (values == null) return new boolean[] { false };
 
-        if (values.length == 1)
-        {
+        if (values.length == 1) {
             boolean[] results = new boolean[1];
             results[0] = add(pointer, values[1]);
             return results;
@@ -43,12 +39,10 @@ public class ArrayUtils
         int size = 0;
 
         for (int i = 0; i < values.length; i++)
-        if (find(pointer.value, values[i]) == -1)
-        {
+        if (find(pointer.value, values[i]) == -1) {
             tmpArr[size++] = values[i];
             results[i] = true;
-        }
-        else results[i] = false;
+        } else results[i] = false;
 
         int index = pointer.value.length;
         resizeArr(pointer, pointer.value.length + size);
@@ -58,21 +52,18 @@ public class ArrayUtils
         return results;
     }
 
-    private static void castX(Class<?> castType, Object source, Object output)
-    {
+    private static void castX(Class<?> castType, Object source, Object output) {
         if (source.getClass().isArray() == false) return;
         int dimCount = getDimensionCount(source);
 
-        for (int i = 0; i < Array.getLength(source) && i < Array.getLength(output); i++)
-        {
+        for (int i = 0; i < Array.getLength(source) && i < Array.getLength(output); i++) {
             castX(castType, Array.get(source, i), Array.get(output, i));
 
             if (dimCount == 1) Array.set(output, i, Array.get(source, i));
         }
     }
     @SuppressWarnings("unchecked")
-    public static <T> T cast(Class<T> type, Object arr) throws ClassCastException
-    {
+    public static <T> T cast(Class<T> type, Object arr) throws ClassCastException {
         if (type == null) throw new NullPointerException("type cannot be null");
         if (type == arr.getClass()) return (T)arr;
         if (arr.getClass().isArray() == false)
@@ -86,19 +77,16 @@ public class ArrayUtils
         return result;
     }
 
-    public static <T> boolean compareAll(T[] arr, T value)
-    {
+    public static <T> boolean compareAll(T[] arr, T value) {
         for (int i = 0; i < arr.length; i++)
             if (arr[i].equals(value) == false) return false;
         return true;
     }
 
-    private static void createDimensionMapX(ObjectPointer<Integer> index, int[] map, Object arr)
-    {
+    private static void createDimensionMapX(ObjectPointer<Integer> index, int[] map, Object arr) {
         int indexValue = ((Number)index.value).intValue();
 
-        if (arr != null && arr.getClass().isArray() == true)
-        {
+        if (arr != null && arr.getClass().isArray() == true) {
             int length = Array.getLength(arr);
             map[indexValue] = map[indexValue] < length ? length : map[indexValue];
             index.value = ++indexValue;
@@ -107,8 +95,7 @@ public class ArrayUtils
             index.value = --indexValue;
         }
     }
-    public static int[] createDimensionMap(Object arr)
-    {
+    public static int[] createDimensionMap(Object arr) {
         if (arr.getClass().isArray() == false)
             return new int[0];
 
@@ -119,24 +106,20 @@ public class ArrayUtils
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> void deepArrCopyX(T source, ObjectPointer<T> output)
-    {
-        if (source.getClass().isArray() == false)
-        {
+    private static <T> void deepArrCopyX(T source, ObjectPointer<T> output) {
+        if (source.getClass().isArray() == false) {
             output.value = source;
             return;
         }
 
-        for (int i = 0; i < Array.getLength(source); i++)
-        {
+        for (int i = 0; i < Array.getLength(source); i++) {
             ObjectPointer<T> pointer = new ObjectPointer<T>((T)Array.get(output.value, i));
             deepArrCopyX((T)Array.get(source, i), pointer);
             Array.set(output.value, i, pointer.value);
         }
     }
     @SuppressWarnings("unchecked")
-    public static <T> T deepArrCopy(T arr)
-    {
+    public static <T> T deepArrCopy(T arr) {
         if (arr.getClass().isArray() == false) throw new IllegalArgumentException("arr must be array type");
 
         ObjectPointer<T> pointer = new ObjectPointer<T>((T)Array.newInstance(getComponentType(arr), createDimensionMap(arr)));
@@ -145,8 +128,7 @@ public class ArrayUtils
         return pointer.value;
     }
 
-    public static <T> int find(T[] arr, T value)
-    {
+    public static <T> int find(T[] arr, T value) {
         if (arr == null) throw new NullPointerException("arr cannot be null");
         if (value == null) throw new NullPointerException("value cannot be null");
 
@@ -156,8 +138,7 @@ public class ArrayUtils
         return -1;
     }
 
-    public static <T> int find(T[] arr, T value, int index, int length)
-    {
+    public static <T> int find(T[] arr, T value, int index, int length) {
         if (arr == null) throw new NullPointerException("arr cannot be null");
         if (value == null) throw new NullPointerException("value cannot be null");
         if (NumberUtils.isWithinRange(arr.length, index, length) == false)
@@ -168,8 +149,7 @@ public class ArrayUtils
         return -1;
     }
 
-    public static <T> int[] findAll(T[] arr, T value)
-    {
+    public static <T> int[] findAll(T[] arr, T value) {
         if (arr == null) throw new NullPointerException("arr cannot be null");
         if (value == null) throw new NullPointerException("value cannot be null");
 
@@ -185,8 +165,7 @@ public class ArrayUtils
         return indexes;
     }
 
-    public static Class<?> getComponentType(Class<?> arr)
-    {
+    public static Class<?> getComponentType(Class<?> arr) {
         if (arr == null) throw new NullPointerException("arr cannot be null");
         if (arr.isArray() == false) return arr;
 
@@ -194,8 +173,7 @@ public class ArrayUtils
 
         return arr;
     }
-    public static Class<?> getComponentType(Object arr)
-    {
+    public static Class<?> getComponentType(Object arr) {
         if (arr == null) throw new NullPointerException("arr cannot be null");
 
         Class<?> type = arr.getClass();
@@ -205,22 +183,19 @@ public class ArrayUtils
         return type;
     }
 
-    private static void getDimensionCountX(Object arr, ObjectPointer<Integer> counter, ObjectPointer<Integer> index)
-    {
+    private static void getDimensionCountX(Object arr, ObjectPointer<Integer> counter, ObjectPointer<Integer> index) {
         int indexInt = index.value.intValue();
         if (indexInt > counter.value.intValue())
             counter.value = indexInt;
 
-        if (arr != null && arr.getClass().isArray() == true)
-        {
+        if (arr != null && arr.getClass().isArray() == true) {
             index.value = indexInt + 1;
             for (int i = 0; i < Array.getLength(arr); i++)
                 getDimensionCountX(Array.get(arr, i), counter, index);
             index.value = indexInt;
         }
     }
-    public static int getDimensionCount(Object arr)
-    {
+    public static int getDimensionCount(Object arr) {
         if (arr == null) throw new NullPointerException("arr cannot be null");
         if (arr.getClass().isArray() == false) return 0;
 
@@ -229,16 +204,14 @@ public class ArrayUtils
         return counter.value.intValue();
     }
 
-    public static <T> boolean remove(ObjectPointer<T[]> pointer, T value)
-    {
+    public static <T> boolean remove(ObjectPointer<T[]> pointer, T value) {
         if (pointer == null) throw new NullPointerException("arr cannot be null");
         if (pointer.value == null) throw new NullPointerException("value inside of pointer cannot be null");
         if (value == null) throw new NullPointerException("value cannot be null");
 
         int index = find(pointer.value, value);
 
-        if (index != -1)
-        {
+        if (index != -1) {
             for (int i = index; i < pointer.value.length; i++)
                 pointer.value[i] = i+1 != pointer.value.length ? pointer.value[i] : null;
 
@@ -249,8 +222,7 @@ public class ArrayUtils
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> boolean removeAll(ObjectPointer<T[]> pointer, T value)
-    {
+    public static <T> boolean removeAll(ObjectPointer<T[]> pointer, T value) {
         if (pointer == null) throw new NullPointerException("arr cannot be null");
         if (pointer.value == null) throw new NullPointerException("value inside of pointer cannot be null");
         if (value == null) throw new NullPointerException("value cannot be null");
@@ -260,8 +232,7 @@ public class ArrayUtils
         T[] arr = (T[])Array.newInstance(getComponentType(pointer.value), pointer.value.length - indexes.length);
 
         for (int i = 0, j = 0; i < indexes.length; i++)
-        if (i != indexes[j])
-        {
+        if (i != indexes[j]) {
             arr[i] = pointer.value[i];
             j++;
         }
@@ -272,8 +243,7 @@ public class ArrayUtils
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> boolean removeDuplicates(ObjectPointer<T[]> pointer)
-    {
+    public static <T> boolean removeDuplicates(ObjectPointer<T[]> pointer) {
         if (pointer == null) throw new NullPointerException("arr cannot be null");
         if (pointer.value == null) throw new NullPointerException("value inside of pointer cannot be null");
 
@@ -290,8 +260,7 @@ public class ArrayUtils
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> void resizeArr(ObjectPointer<T[]> pointer, int newLength)
-    {
+    public static <T> void resizeArr(ObjectPointer<T[]> pointer, int newLength) {
         T[] arr = pointer.value;
         Class<?> pointerType = getComponentType(pointer.value);
         pointer.value = (T[])cast(pointerType, (T[])Array.newInstance(pointerType, newLength));
@@ -300,8 +269,7 @@ public class ArrayUtils
             pointer.value[i] = arr[i];
     }
 
-    public static Object wrap(Object arr)
-    {
+    public static Object wrap(Object arr) {
         Class<?> type = getComponentType(arr);
         return cast(type.isPrimitive() == true ? ClassUtils.getWrapperType(type) : ClassUtils.getPrimitiveType(type), deepArrCopy(arr));
     }

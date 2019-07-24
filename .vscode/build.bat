@@ -8,6 +8,7 @@ SET gcc64=C:\cygwin\bin\x86_64-w64-mingw32-gcc.exe
 SET javac="%jdk6_64%\bin\javac.exe"
 SET javah="%jdk6_64%\bin\javah.exe"
 SET jar="%jdk6_64%\bin\jar.exe"
+SET tempFile=%TEMP%\javaFiles.txt
 
 REM Configuration
 SET dllName=CmdUtils
@@ -24,8 +25,8 @@ ECHO Recreating directory tree
 IF NOT EXIST %binDir% (MKDIR %binDir%)
 
 ECHO Compiling java files
-DIR /s /B %srcDir%\*.java > %workspaceDir%\.vscode\javaFiles.txt
-%javac% -d %binDir% -sourcepath srcDir @%workspaceDir%\.vscode\javaFiles.txt
+DIR /s /B %srcDir%\*.java > %tempFile%
+%javac% -d %binDir% -sourcepath %srcDir% @%tempFile%
 
 ECHO Creating C headers
 %javah% -jni -d %nativeDir% -classpath %binDir% @%workspaceDir%\.vscode\nativeClassFiles.txt

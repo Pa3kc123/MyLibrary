@@ -1,5 +1,3 @@
-.vscode/javaFiles.txt
-.vscode/nativeClassFiles.txt
 bin/
 src/native/*.h
 MyLibrary.jar

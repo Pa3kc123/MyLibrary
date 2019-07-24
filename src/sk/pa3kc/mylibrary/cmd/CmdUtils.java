@@ -9,8 +9,7 @@ import sk.pa3kc.mylibrary.DefaultSystemPropertyStrings;
 import sk.pa3kc.mylibrary.util.StreamUtils;
 import sk.pa3kc.mylibrary.util.StringUtils;
 
-public class CmdUtils
-{
+public class CmdUtils {
     static final char escCode = 0x1B;
 
     static CmdUtils instance = null;
@@ -20,10 +19,8 @@ public class CmdUtils
 
     static CmdUtils getInstance() { return instance == null ? (instance = new CmdUtils()) : instance; }
 
-    private CmdUtils()
-    {
-        if (DefaultSystemPropertyStrings.OS_NAME.contains("Windows") == true)
-        {
+    private CmdUtils() {
+        if (DefaultSystemPropertyStrings.OS_NAME.contains("Windows") == true) {
             StringBuilder builder = new StringBuilder();
             builder.append(this.getClass().getSimpleName());
             builder.append(DefaultSystemPropertyStrings.OS_ARCH.equals("amd64") == true ? 64 : 32);
@@ -38,14 +35,11 @@ public class CmdUtils
             builder.append(libName);
 
             File installedLibFile = new File(builder.toString());
-            if (installedLibFile.exists() == false)
-            {
+            if (installedLibFile.exists() == false) {
                 InputStream resource = null;
                 OutputStream stream = null;
-                try
-                {
-                    if (installedLibFile.exists() == false)
-                    {
+                try {
+                    if (installedLibFile.exists() == false) {
                         installedLibFile.getParentFile().mkdirs();
                         installedLibFile.createNewFile();
                     }
@@ -55,23 +49,16 @@ public class CmdUtils
                     byte[] buffer = new byte[1024];
                     for (int checksum = resource.read(buffer); checksum != -1; checksum = resource.read(buffer))
                         stream.write(buffer);
-                }
-                catch (Throwable ex)
-                {
+                } catch (Throwable ex) {
                     ex.printStackTrace();
-                }
-                finally
-                {
+                } finally {
                     StreamUtils.closeStreams(stream, resource);
                 }
             }
 
-            try
-            {
+            try {
                 System.load(installedLibFile.getAbsolutePath());
-            }
-            catch (Throwable ex)
-            {
+            } catch (Throwable ex) {
                 ex.printStackTrace();
             }
 
@@ -87,8 +74,7 @@ public class CmdUtils
 
     public static native void init();
 
-    private void onColorChanged(CmdColor oldColor, CmdColor newColor)
-    {
+    private void onColorChanged(CmdColor oldColor, CmdColor newColor) {
         this.print(newColor);
         this.color = newColor;
     }
@@ -103,15 +89,11 @@ public class CmdUtils
     private void resetColorX() { this.print(CmdColor.RESET); }
 
     private void print(CmdColor color) { this.print(color.code); }
-    private void print(String text)
-    {
-        try
-        {
+    private void print(String text) {
+        try {
             this.stream.write(text.getBytes());
             this.stream.flush();
-        }
-        catch (Throwable ex)
-        {
+        } catch (Throwable ex) {
             ex.printStackTrace();
         }
     }

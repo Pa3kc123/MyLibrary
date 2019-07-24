@@ -9,8 +9,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-public class Device
-{
+public class Device {
     private final IPAddress localIP;
     private final IPAddress networkIP;
     private final IPAddress broadcastIP;
@@ -20,19 +19,15 @@ public class Device
     private final SubNetRange subNetRange;
     private final boolean onlyLoopback;
 
-    private Device(NetworkInterface netInterface)
-    {
+    private Device(NetworkInterface netInterface) {
         this.onlyLoopback = true;
         this.deviceName = netInterface.getName();
 
         IPAddress tmp;
 
-        try
-        {
+        try {
             tmp = new IPAddress(new byte[] { 127, 0, 0, 1 });
-        }
-        catch (Throwable ex)
-        {
+        } catch (Throwable ex) {
             ex.printStackTrace();
             tmp = null;
         }
@@ -44,12 +39,10 @@ public class Device
         this.subNetRange = null;
     }
 
-    public Device(NetworkInterface netInterface, Inet4Address localAddress)
-    {
+    public Device(NetworkInterface netInterface, Inet4Address localAddress) {
         this.onlyLoopback = false;
         this.deviceName = netInterface.getName();
-
-        {
+ {
             int tmp = 0;
             byte[] addresses = localAddress.getAddress();
             for (int i = 0; i < 4; i++)
@@ -69,8 +62,7 @@ public class Device
         this.subNetRange = new SubNetRange(this.mask);
     }
 
-    public static Device onlyLocalHost(NetworkInterface netInterface)
-    {
+    public static Device onlyLocalHost(NetworkInterface netInterface) {
         return new Device(netInterface);
     }
 
@@ -84,8 +76,7 @@ public class Device
     public final SubNetRange getSubNetRange() { return this.subNetRange; }
     public final boolean isOnlyLoopback() { return this.onlyLoopback; }
 
-    private IPAddress getMask(NetworkInterface netInterface)
-    {
+    private IPAddress getMask(NetworkInterface netInterface) {
         int mask = 0;
 
         for (InterfaceAddress address : netInterface.getInterfaceAddresses())
@@ -96,16 +87,13 @@ public class Device
         return new IPAddress(mask);
     }
 
-    public static Device[] getUsableDevices()
-    {
+    public static Device[] getUsableDevices() {
         List<NetworkInterface> interfaces = new ArrayList<NetworkInterface>();
         List<Device> usableDevices = new ArrayList<Device>();
 
-        try
-        {
+        try {
             Enumeration<NetworkInterface> netInterfaceEnumeration = NetworkInterface.getNetworkInterfaces();
-            while (netInterfaceEnumeration.hasMoreElements() == true)
-            {
+            while (netInterfaceEnumeration.hasMoreElements() == true) {
                 NetworkInterface netInterface = netInterfaceEnumeration.nextElement();
 
                 if (netInterface.isVirtual() == true || netInterface.isUp() == false) continue;
@@ -113,21 +101,17 @@ public class Device
                 interfaces.add(netInterface);
 
                 Enumeration<InetAddress> netAddressEnumeration = netInterface.getInetAddresses();
-                while (netAddressEnumeration.hasMoreElements() == true)
-                {
+                while (netAddressEnumeration.hasMoreElements() == true) {
                     InetAddress netAddress = netAddressEnumeration.nextElement();
                     if (netAddress.isLoopbackAddress() == false && netAddress.getClass() != Inet6Address.class)
                         usableDevices.add(new Device(netInterface, (Inet4Address)netAddress));
                 }
             }
-        }
-        catch (Throwable ex)
-        {
+        } catch (Throwable ex) {
             ex.printStackTrace(System.out);
         }
 
-        if (usableDevices.size() == 0)
-        {
+        if (usableDevices.size() == 0) {
             Device[] devices = new Device[interfaces.size()];
 
             for (int i = 0; i < devices.length; i++)
@@ -135,7 +119,7 @@ public class Device
 
             return devices;
         }
-        
+
         return usableDevices.toArray(new Device[0]);
     }
 }

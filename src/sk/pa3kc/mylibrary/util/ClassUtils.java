@@ -1,11 +1,9 @@
 package sk.pa3kc.mylibrary.util;
 
-public class ClassUtils
-{
+public class ClassUtils {
     private ClassUtils() {}
 
-    public static Class<?> getPrimitiveType(Class<?> type)
-    {
+    public static Class<?> getPrimitiveType(Class<?> type) {
         if (type == null) throw new NullPointerException("type cannot be null");
 
         if (type.isPrimitive() == true) return type;
@@ -21,8 +19,7 @@ public class ClassUtils
 
         return type;
     }
-    public static Class<?> getWrapperType(Class<?> type)
-    {
+    public static Class<?> getWrapperType(Class<?> type) {
         if (type == null) throw new NullPointerException("type cannot be null");
 
         if (type.isPrimitive() == false) return type;

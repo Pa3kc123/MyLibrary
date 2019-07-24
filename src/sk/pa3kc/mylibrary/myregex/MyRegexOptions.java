@@ -1,7 +1,6 @@
 package sk.pa3kc.mylibrary.myregex;
 
-public abstract class MyRegexOptions
-{
+public abstract class MyRegexOptions {
     private MyRegexOptions(){}
 
     public static final int UNIX_LINES = 0x01;

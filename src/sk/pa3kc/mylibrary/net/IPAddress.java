@@ -1,20 +1,17 @@
 package sk.pa3kc.mylibrary.net;
 
-public class IPAddress
-{
+public class IPAddress {
     private int binaryAddress;
     private byte[] byteAddress;
 
-    public IPAddress(int value)
-    {
+    public IPAddress(int value) {
         this.binaryAddress = value;
         this.byteAddress = new byte[4];
 
         for (int i = 3; i >= 0; i--)
             this.byteAddress[i] = (byte)(this.binaryAddress >>> 8 * (3 - i));
     }
-    public IPAddress(byte[] value)
-    {
+    public IPAddress(byte[] value) {
         this.binaryAddress = 0;
         this.byteAddress = value;
 
@@ -26,8 +23,7 @@ public class IPAddress
     public final byte[] asByteArray() { return this.byteAddress; }
     public final String asDecimalString() { return String.valueOf(this.binaryAddress); }
     public final String asBinaryString() { return Integer.toBinaryString(this.binaryAddress); }
-    public final String asFormattedString()
-    {
+    public final String asFormattedString() {
         StringBuilder result = new StringBuilder();
         int[] val = new int[4];
 

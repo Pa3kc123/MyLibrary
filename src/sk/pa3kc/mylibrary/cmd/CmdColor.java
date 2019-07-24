@@ -1,7 +1,6 @@
 package sk.pa3kc.mylibrary.cmd;
 
-public enum CmdColor
-{
+public enum CmdColor {
     RESET("[0m"),
 
     // Regular Colors
@@ -75,8 +74,7 @@ public enum CmdColor
     WHITE_BACKGROUND_BRIGHT("[0;107m");     // WHITE
 
     public final String code;
-    private CmdColor(String code)
-    {
+    private CmdColor(String code) {
         if (CmdUtils.instance == null)
             CmdUtils.getInstance();
         this.code = CmdUtils.escCode + code;
