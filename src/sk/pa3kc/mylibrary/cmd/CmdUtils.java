@@ -47,8 +47,10 @@ public class CmdUtils {
                     stream = new FileOutputStream(installedLibFile);
 
                     byte[] buffer = new byte[1024];
-                    for (int checksum = resource.read(buffer); checksum != -1; checksum = resource.read(buffer))
+                    for (int checksum = resource.read(buffer); checksum != -1; checksum = resource.read(buffer)) {
                         stream.write(buffer);
+                        stream.flush();
+                    }
                 } catch (Throwable ex) {
                     ex.printStackTrace();
                 } finally {
@@ -102,6 +104,8 @@ public class CmdUtils {
     public static OutputStream getStream() { return CmdUtils.getInstance().getStreamX(); }
 
     public static void setColor(CmdColor value) { CmdUtils.getInstance().setColorX(value); }
+    public static void setForegroundRGB(int r, int g, int b) { CmdUtils.getInstance().print(StringUtils.build(escCode, "[38;2;", r, ";", g, ";", b, "m")); }
+    public static void setBackgroundRGB(int r, int g, int b) { CmdUtils.getInstance().print(StringUtils.build(escCode, "[48;2;", r, ";", g, ";", b, "m")); }
     public static void setStream(OutputStream value) { CmdUtils.getInstance().setStreamX(value); }
 
     public static void moveCursorTo(int x, int y) { CmdUtils.getInstance().moveCursorToX(x, y); }

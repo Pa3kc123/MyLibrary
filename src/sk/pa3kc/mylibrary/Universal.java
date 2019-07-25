@@ -3,30 +3,35 @@ package sk.pa3kc.mylibrary;
 import sk.pa3kc.mylibrary.cmd.CmdColor;
 import sk.pa3kc.mylibrary.cmd.CmdUtils;
 import sk.pa3kc.mylibrary.net.Device;
+import sk.pa3kc.mylibrary.util.NumberUtils;
 
 public class Universal {
     public static void main(String[] args) {
-        final String NEWLINE = DefaultSystemPropertyStrings.LINE_SEPARATOR;
-
         CmdUtils.setColor(CmdColor.RED);
-        System.out.print("This text should be red" + NEWLINE);
+        System.out.println("This text should be red");
         CmdUtils.setColor(CmdColor.GREEN);
-        System.out.print("This text should be green" + NEWLINE);
+        System.out.println("This text should be green");
         CmdUtils.setColor(CmdColor.BLUE);
-        System.out.print("This text should be blue" + NEWLINE);
+        System.out.println("This text should be blue");
         CmdUtils.resetColor();
+
+        CmdUtils.setForegroundRGB(255, 0, 0);
+        System.out.println("This text has RGB #F00");
+        CmdUtils.resetColor();
+
+        System.out.println(NumberUtils.round(0.12345, 3));
 
         try {
             final Device[] devices = Device.getUsableDevices();
 
             for (Device device : devices) {
-                System.out.print("Device name = " + device.getDeviceName() + NEWLINE);
-                System.out.print("Device IP addresses:" + NEWLINE);
-                System.out.print("Local = " + device.getLocalIP().asFormattedString() + NEWLINE);
+                System.out.println("Device name = " + device.getDeviceName());
+                System.out.println("Device IP addresses:");
+                System.out.println("Local = " + device.getLocalIP().asFormattedString());
                 if (device.isOnlyLoopback() == false) {
-                    System.out.print("Network = " + device.getNetworkIP().asFormattedString() + NEWLINE);
-                    System.out.print("Broadcast = " + device.getBroadcastIP().asFormattedString() + NEWLINE);
-                    System.out.print("Test of subnet range = " + (device.getSubNetRange().doesInvolve(device.getLocalIP()) == true ? "PASSED" : "FAILED") + NEWLINE);
+                    System.out.println("Network = " + device.getNetworkIP().asFormattedString());
+                    System.out.println("Broadcast = " + device.getBroadcastIP().asFormattedString());
+                    System.out.println("Test of subnet range = " + (device.getSubNetRange().doesInvolve(device.getLocalIP()) == true ? "PASSED" : "FAILED"));
                 }
             }
         } catch (Exception ex) {
