@@ -18,6 +18,7 @@ dllName=CmdUtils
 binDir=$workspaceDir/bin
 srcDir=$workspaceDir/src
 nativeDir=$workspaceDir/src/native
+tmpFile=/tmp/javaFiles.txt
 
 #Removable of old files
 echo Removing old files
@@ -31,8 +32,8 @@ if ! [ -d $binDir ]; then mkdir $binDir; fi
 
 #Compiling java files
 echo Compiling java files
-find $srcDir -name *.java -type f > $workspaceDir/.vscode/javaFiles.txt
-$javac -d $binDir -sourcepath $srcDir @$workspaceDir/.vscode/javaFiles.txt
+find $srcDir -name *.java -type f > $tmpFile
+$javac -d $binDir -sourcepath $srcDir @$tmpFile
 
 #Creating C header base on compiled java files
 echo Creating C headers
