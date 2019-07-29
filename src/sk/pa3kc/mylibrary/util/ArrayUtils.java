@@ -53,7 +53,7 @@ public class ArrayUtils {
     }
 
     private static void castX(Class<?> castType, Object source, Object output) {
-        if (source.getClass().isArray() == false) return;
+        if (!source.getClass().isArray()) return;
         int dimCount = getDimensionCount(source);
 
         for (int i = 0; i < Array.getLength(source) && i < Array.getLength(output); i++) {
@@ -66,7 +66,7 @@ public class ArrayUtils {
     public static <T> T cast(Class<T> type, Object arr) throws ClassCastException {
         if (type == null) throw new NullPointerException("type cannot be null");
         if (type == arr.getClass()) return (T)arr;
-        if (arr.getClass().isArray() == false)
+        if (!arr.getClass().isArray())
             try { return type.cast(arr); } catch (ClassCastException ex) { return null; }
 
         Class<?> castType = getComponentType(type);
@@ -77,16 +77,35 @@ public class ArrayUtils {
         return result;
     }
 
-    public static <T> boolean compareAll(T[] arr, T value) {
-        for (int i = 0; i < arr.length; i++)
-            if (arr[i].equals(value) == false) return false;
-        return true;
+    public static boolean compareAll(Object arr, Object val) {
+        if (arr == null) throw new NullPointerException("arr cannot be null");
+        if (val == null) throw new NullPointerException("val cannot be null");
+
+        Class<?> arrType = getComponentType(arr);
+        if (arrType.isPrimitive()) {
+            arrType = ClassUtils.getWrapperType(arrType);
+            arr = wrap(arr);
+        }
+
+        if (val.getClass() != arrType) return false;
+        if (arr.getClass().isArray()) {
+            int length = Array.getLength(arr);
+            boolean result = false;
+
+            for (int i = 0; i < length; i++) {
+                result = compareAll(Array.get(arr, i), val);
+                if (result) break;
+            }
+
+            return result;
+        }
+        return arr.equals(val);
     }
 
     private static void createDimensionMapX(ObjectPointer<Integer> index, int[] map, Object arr) {
         int indexValue = ((Number)index.value).intValue();
 
-        if (arr != null && arr.getClass().isArray() == true) {
+        if (arr != null && arr.getClass().isArray()) {
             int length = Array.getLength(arr);
             map[indexValue] = map[indexValue] < length ? length : map[indexValue];
             index.value = ++indexValue;
@@ -96,7 +115,7 @@ public class ArrayUtils {
         }
     }
     public static int[] createDimensionMap(Object arr) {
-        if (arr.getClass().isArray() == false)
+        if (!arr.getClass().isArray())
             return new int[0];
 
         int[] map = new int[getDimensionCount(arr)];
@@ -107,7 +126,7 @@ public class ArrayUtils {
 
     @SuppressWarnings("unchecked")
     private static <T> void deepArrCopyX(T source, ObjectPointer<T> output) {
-        if (source.getClass().isArray() == false) {
+        if (!source.getClass().isArray()) {
             output.value = source;
             return;
         }
@@ -120,7 +139,7 @@ public class ArrayUtils {
     }
     @SuppressWarnings("unchecked")
     public static <T> T deepArrCopy(T arr) {
-        if (arr.getClass().isArray() == false) throw new IllegalArgumentException("arr must be array type");
+        if (!arr.getClass().isArray()) throw new IllegalArgumentException("arr must be array type");
 
         ObjectPointer<T> pointer = new ObjectPointer<T>((T)Array.newInstance(getComponentType(arr), createDimensionMap(arr)));
         deepArrCopyX(arr, pointer);
@@ -133,7 +152,7 @@ public class ArrayUtils {
         if (value == null) throw new NullPointerException("value cannot be null");
 
         for (int i = 0; i < arr.length; i++)
-        if (arr[i].equals(value) == true)
+        if (arr[i].equals(value))
             return i;
         return -1;
     }
@@ -141,7 +160,7 @@ public class ArrayUtils {
     public static <T> int find(T[] arr, T value, int index, int length) {
         if (arr == null) throw new NullPointerException("arr cannot be null");
         if (value == null) throw new NullPointerException("value cannot be null");
-        if (NumberUtils.isWithinRange(arr.length, index, length) == false)
+        if (!NumberUtils.isWithinRange(arr.length, index, length))
             throw new IndexOutOfBoundsException("Arr length" + arr.length + " | index = " + index + " | length = " + length);
 
         for (int i = index; i < index + length; i++)
@@ -169,16 +188,15 @@ public class ArrayUtils {
         if (arr == null) throw new NullPointerException("arr cannot be null");
         if (arr.isArray() == false) return arr;
 
-        while ((arr = arr.getComponentType()).isArray() == true) {}
+        while ((arr = arr.getComponentType()).isArray()) {}
 
         return arr;
     }
     public static Class<?> getComponentType(Object arr) {
         if (arr == null) throw new NullPointerException("arr cannot be null");
 
-        Class<?> type = arr.getClass();
-
-        while ((type = type.getComponentType()).isArray() == true) {}
+        Class<?> type;
+        for (type = arr.getClass(); type.isArray(); type = type.getComponentType()) {}
 
         return type;
     }
@@ -188,7 +206,7 @@ public class ArrayUtils {
         if (indexInt > counter.value.intValue())
             counter.value = indexInt;
 
-        if (arr != null && arr.getClass().isArray() == true) {
+        if (arr != null && arr.getClass().isArray()) {
             index.value = indexInt + 1;
             for (int i = 0; i < Array.getLength(arr); i++)
                 getDimensionCountX(Array.get(arr, i), counter, index);
@@ -197,7 +215,7 @@ public class ArrayUtils {
     }
     public static int getDimensionCount(Object arr) {
         if (arr == null) throw new NullPointerException("arr cannot be null");
-        if (arr.getClass().isArray() == false) return 0;
+        if (!arr.getClass().isArray()) return 0;
 
         ObjectPointer<Integer> counter = new ObjectPointer<Integer>(0);
         getDimensionCountX(arr, counter, new ObjectPointer<Integer>(0));
@@ -271,6 +289,6 @@ public class ArrayUtils {
 
     public static Object wrap(Object arr) {
         Class<?> type = getComponentType(arr);
-        return cast(type.isPrimitive() == true ? ClassUtils.getWrapperType(type) : ClassUtils.getPrimitiveType(type), deepArrCopy(arr));
+        return cast(type.isPrimitive() ? ClassUtils.getWrapperType(type) : ClassUtils.getPrimitiveType(type), deepArrCopy(arr));
     }
 }

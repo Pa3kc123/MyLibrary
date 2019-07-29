@@ -6,7 +6,7 @@ public class ClassUtils {
     public static Class<?> getPrimitiveType(Class<?> type) {
         if (type == null) throw new NullPointerException("type cannot be null");
 
-        if (type.isPrimitive() == true) return type;
+        if (type.isPrimitive()) return type;
 
         if (type == Character.class) type = char.class;
         if (type == Byte.class) type = byte.class;
@@ -22,7 +22,7 @@ public class ClassUtils {
     public static Class<?> getWrapperType(Class<?> type) {
         if (type == null) throw new NullPointerException("type cannot be null");
 
-        if (type.isPrimitive() == false) return type;
+        if (!type.isPrimitive()) return type;
 
         if (type == char.class) type = Character.class;
         if (type == byte.class) type = Byte.class;

@@ -12,12 +12,12 @@ public class FileProperties extends Properties {
 
     public FileProperties(String saveFilePath) {
         super();
-        this.filePath = new File(saveFilePath).exists() == true ? saveFilePath : null;
+        this.filePath = new File(saveFilePath).exists() ? saveFilePath : null;
     }
 
     public FileProperties(Properties properties, String saveFilePath) {
         super(properties);
-        this.filePath = new File(saveFilePath).exists() == true ? saveFilePath : null;
+        this.filePath = new File(saveFilePath).exists() ? saveFilePath : null;
     }
 
     public boolean saveToFile() {

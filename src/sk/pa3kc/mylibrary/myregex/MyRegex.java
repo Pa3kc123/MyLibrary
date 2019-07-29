@@ -86,7 +86,7 @@ public class MyRegex {
         String[] resultArray = new String[matcher.groupCount()];
         short j = 0;
 
-        while (matcher.find() == true)
+        while (matcher.find())
         for (short i = 1; i <= matcher.groupCount(); i++)
             resultArray[j++] = matcher.group(i);
 
@@ -117,7 +117,7 @@ public class MyRegex {
         String[] resultArray = new String[matcher.groupCount()];
         short j = 0;
 
-        while (matcher.find() == true)
+        while (matcher.find())
         for (short i = 1; i <= matcher.groupCount(); i++)
             resultArray[j++] = matcher.group(i);
 

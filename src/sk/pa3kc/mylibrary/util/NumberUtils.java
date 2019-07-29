@@ -17,9 +17,8 @@ public class NumberUtils
 
         double mult = 1;
 
-        for (int i = 0; i < places; i++) {
-            mult *= 10;
-        }
+        for (int i = 0; i < places; i++)
+            mult *= 10d;
 
         return (double)(Math.round(value * mult) / mult);
     }
@@ -29,9 +28,8 @@ public class NumberUtils
 
         float mult = 1;
 
-        for (int i = 0; i < places; i++) {
-            mult *= 10;
-        }
+        for (int i = 0; i < places; i++)
+            mult *= 10f;
 
         return (float)(Math.round(value * mult) / mult);
     }

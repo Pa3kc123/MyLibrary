@@ -20,10 +20,10 @@ public class CmdUtils {
     static CmdUtils getInstance() { return instance == null ? (instance = new CmdUtils()) : instance; }
 
     private CmdUtils() {
-        if (DefaultSystemPropertyStrings.OS_NAME.contains("Windows") == true) {
+        if (DefaultSystemPropertyStrings.OS_NAME.contains("Windows")) {
             StringBuilder builder = new StringBuilder();
             builder.append(this.getClass().getSimpleName());
-            builder.append(DefaultSystemPropertyStrings.OS_ARCH.equals("amd64") == true ? 64 : 32);
+            builder.append(DefaultSystemPropertyStrings.OS_ARCH.equals("amd64") ? 64 : 32);
             builder.append(".dll");
             String libName = builder.toString();
 

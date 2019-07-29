@@ -13,7 +13,7 @@ public class ArrayPair<T> implements Iterable<T> {
     }
     @SuppressWarnings("unchecked")
     public ArrayPair(T[] arr1, T[] arr2, boolean equalInLength) {
-        if (equalInLength == true) {
+        if (equalInLength) {
             int size = arr1.length > arr2.length ? arr1.length : arr2.length;
 
             this.arr1 = (T[]) new Object[size];

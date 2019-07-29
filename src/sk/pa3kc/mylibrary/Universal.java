@@ -28,10 +28,10 @@ public class Universal {
                 System.out.println("Device name = " + device.getDeviceName());
                 System.out.println("Device IP addresses:");
                 System.out.println("Local = " + device.getLocalIP().asFormattedString());
-                if (device.isOnlyLoopback() == false) {
+                if (!device.isOnlyLoopback()) {
                     System.out.println("Network = " + device.getNetworkIP().asFormattedString());
                     System.out.println("Broadcast = " + device.getBroadcastIP().asFormattedString());
-                    System.out.println("Test of subnet range = " + (device.getSubNetRange().doesInvolve(device.getLocalIP()) == true ? "PASSED" : "FAILED"));
+                    System.out.println("Test of subnet range = " + (device.getSubNetRange().doesInvolve(device.getLocalIP()) ? "PASSED" : "FAILED"));
                 }
             }
         } catch (Exception ex) {

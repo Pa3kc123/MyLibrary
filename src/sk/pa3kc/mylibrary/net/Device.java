@@ -80,7 +80,7 @@ public class Device {
         int mask = 0;
 
         for (InterfaceAddress address : netInterface.getInterfaceAddresses())
-        if (address.getAddress() instanceof Inet4Address == true)
+        if (address.getAddress() instanceof Inet4Address)
         for (int i = 0; i < address.getNetworkPrefixLength(); i++)
             mask |= 1 << 31 - i;
 
@@ -93,17 +93,17 @@ public class Device {
 
         try {
             Enumeration<NetworkInterface> netInterfaceEnumeration = NetworkInterface.getNetworkInterfaces();
-            while (netInterfaceEnumeration.hasMoreElements() == true) {
+            while (netInterfaceEnumeration.hasMoreElements()) {
                 NetworkInterface netInterface = netInterfaceEnumeration.nextElement();
 
-                if (netInterface.isVirtual() == true || netInterface.isUp() == false) continue;
+                if (netInterface.isVirtual() || !netInterface.isUp()) continue;
 
                 interfaces.add(netInterface);
 
                 Enumeration<InetAddress> netAddressEnumeration = netInterface.getInetAddresses();
-                while (netAddressEnumeration.hasMoreElements() == true) {
+                while (netAddressEnumeration.hasMoreElements()) {
                     InetAddress netAddress = netAddressEnumeration.nextElement();
-                    if (netAddress.isLoopbackAddress() == false && netAddress.getClass() != Inet6Address.class)
+                    if (!netAddress.isLoopbackAddress() && netAddress.getClass() != Inet6Address.class)
                         usableDevices.add(new Device(netInterface, (Inet4Address)netAddress));
                 }
             }

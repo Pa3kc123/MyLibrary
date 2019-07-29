@@ -1,8 +1,6 @@
 package sk.pa3kc.mylibrary.myregex;
 
-public abstract class MyRegexOptions {
-    private MyRegexOptions(){}
-
+public interface MyRegexOptions {
     public static final int UNIX_LINES = 0x01;
     public static final int CASE_INSENSITIVE = 0x02;
     public static final int COMMENTS = 0x04;

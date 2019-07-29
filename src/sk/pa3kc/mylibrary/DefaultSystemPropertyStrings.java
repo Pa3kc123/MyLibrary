@@ -1,6 +1,6 @@
 package sk.pa3kc.mylibrary;
 
-public class DefaultSystemPropertyStrings {
+public interface DefaultSystemPropertyStrings {
     public static final String AWT_TOOLKIT = System.getProperty("awt.toolkit");
 
     public static final String FILE_ENCODING = System.getProperty("file.encoding");
