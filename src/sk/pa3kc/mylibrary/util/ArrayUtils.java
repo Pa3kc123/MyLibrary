@@ -2,6 +2,7 @@ package sk.pa3kc.mylibrary.util;
 
 import java.lang.reflect.Array;
 
+import sk.pa3kc.mylibrary.Universal;
 import sk.pa3kc.mylibrary.pojo.ObjectPointer;
 
 public class ArrayUtils {
@@ -29,7 +30,7 @@ public class ArrayUtils {
 
         if (values.length == 1) {
             boolean[] results = new boolean[1];
-            results[0] = add(pointer, values[1]);
+            results[0] = add(pointer, values[0]);
             return results;
         }
 
@@ -281,7 +282,7 @@ public class ArrayUtils {
     public static <T> void resizeArr(ObjectPointer<T[]> pointer, int newLength) {
         T[] arr = pointer.value;
         Class<?> pointerType = getComponentType(pointer.value);
-        pointer.value = (T[])cast(pointerType, (T[])Array.newInstance(pointerType, newLength));
+        pointer.value = (T[])Array.newInstance(pointerType, newLength);
 
         for (int i = 0; i < newLength && i < arr.length; i++)
             pointer.value[i] = arr[i];

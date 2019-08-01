@@ -20,9 +20,14 @@ srcDir=$workspaceDir/src
 nativeDir=$workspaceDir/src/native
 tmpFile=/tmp/javaFiles.txt
 
+# Output files
+outputJar=$workspaceDir/MyLibrary.jar
+sourcesJar=$workspaceDir/MyLibrary-sources.jar
+
 #Removable of old files
 echo Removing old files
-if [ -f $workspaceDir/MyLibrary.jar ]; then rm $workspaceDir/MyLibrary.jar; fi
+if [ -f $outputJar ]; then rm $outputJar; fi
+if [ -f $sourcesJar ]; then rm $sourcesJar; fi
 if [ -d $binDir ]; then rm $binDir -r; fi
 if [ -f $nativeDir/*.h ]; then rm $nativeDir/*.h; fi
 
@@ -56,4 +61,5 @@ fi
 
 #Generating jar with all builded files
 echo Generating jar
-$jar -cfe $workspaceDir/MyLibrary.jar sk.pa3kc.mylibrary.Universal -C $binDir .
+$jar -cfe $outputJar sk.pa3kc.mylibrary.Universal -C $binDir .
+$jar -cf $sourcepath -C $srcDir sk

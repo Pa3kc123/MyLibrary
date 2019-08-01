@@ -16,8 +16,13 @@ SET binDir=%workspaceDir%\bin
 SET srcDir=%workspaceDir%\src
 SET nativeDir=%workspaceDir%\src\native
 
+REM Output jars
+SET outputJar=%workspaceDir%\MyLibrary.jar
+SET sourcesJar=%workspaceDir%\MyLibrary-sources.jar
+
 ECHO Removing old files
-IF EXIST %workspaceDir%\MyLibrary.jar (DEL %workspaceDir%\MyLibrary.jar /q)
+IF EXIST %outputJar% (DEL %outputJar% /q)
+IF EXIST %sourcesJar% (DEL %sourcesJar% /q)
 IF EXIST %binDir% (RD %binDir% /s /q)
 IF EXIST %nativeDir%\*.h (DEL %nativeDir%\*.h /q)
 
@@ -37,6 +42,7 @@ ECHO Building 64-bit dll
 %gcc64% -I"%jdk6_64%\include" -I"%jdk6_64%\include\win32" -I%nativeDir% -shared -o %binDir%\%dllName%64.dll %nativeDir%\%dllName%.c
 
 ECHO Generating jar
-%jar% -cfe %workspaceDir%\MyLibrary.jar sk.pa3kc.mylibrary.Universal -C %binDir% .
+%jar% -cfe %outputJar% sk.pa3kc.mylibrary.Universal -C %binDir% .
+%jar% -cf %sourcesJar% -C %srcDir% sk
 
 ENDLOCAL
