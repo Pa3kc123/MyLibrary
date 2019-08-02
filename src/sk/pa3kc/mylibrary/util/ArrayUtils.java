@@ -2,7 +2,6 @@ package sk.pa3kc.mylibrary.util;
 
 import java.lang.reflect.Array;
 
-import sk.pa3kc.mylibrary.Universal;
 import sk.pa3kc.mylibrary.pojo.ObjectPointer;
 
 public class ArrayUtils {
