@@ -8,7 +8,8 @@ function exist() {
 }
 
 # Constants
-workspaceDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"/..
+# workspaceDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"/..
+workspaceDir=$(pwd)/..
 javac=$jdk6_64/bin/javac
 javah=$jdk6_64/bin/javah
 jar=$jdk6_64/bin/jar
