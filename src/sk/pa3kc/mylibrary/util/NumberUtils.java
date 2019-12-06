@@ -1,23 +1,8 @@
 package sk.pa3kc.mylibrary.util;
 
-public class NumberUtils
+public abstract class NumberUtils
 {
     private NumberUtils() {}
-
-    /**
-     * Checks if range of numbers are in range of array
-     * @param arrLength Length of array
-     * @param index Start pointer
-     * @param length Length of searched range
-     * @return {@code true} if range is within range of arrLength, otherwise {@code false}
-     */
-    public static boolean isWithinRange(int arrLength, int index, int length) {
-        if (index >= 0 && index < arrLength)
-        if (length >= 0 && index < arrLength)
-        if (index + length >= 0 && index + length < arrLength)
-            return true;
-        return false;
-    }
 
     /**
      * Rounds {@code value} to number of decimal {@code places}
@@ -59,7 +44,6 @@ public class NumberUtils
      * @param value the long value
      * @return the argument as an int
      * @throws ArithmeticException if the {@code argument} overflows an int
-     * @since 1.6
      */
     public static int toIntExact(long value) throws ArithmeticException {
         if ((int)value != value)
@@ -69,8 +53,8 @@ public class NumberUtils
 
     /**
      * Returns lowest value from passed values
-     * @param values Values to compare
-     * @return Lowest value from array, -1 if array.length is 0
+     * @param values values to compare
+     * @return lowest value from array, -1 if array.length is 0
      */
     public static int min(int... values) {
         if (values.length == 0) return -1;
@@ -84,8 +68,8 @@ public class NumberUtils
 
     /**
      * Returns highest value from passed values
-     * @param values Values to compare
-     * @return Highest value from array, -1 if array.length is 0
+     * @param values values to compare
+     * @return highest value from array, -1 if array.length is 0
      */
     public static int max(int... values) {
         if (values.length == 0) return -1;
@@ -114,24 +98,193 @@ public class NumberUtils
         return val < sourceMinRange ? sourceMinRange : val > sourceMaxRange ? sourceMaxRange : val;
     }
 
+    /**
+     * Re-maps a number from one range to another
+     * @param val incoming value to be converted
+     * @param sourceMinRange lower bound of the value's current range
+     * @param sourceMaxRange upper bound of the value's current range
+     * @param targetMinRange lower bound  of the value's target range
+     * @param targetMaxRange upper bound  of the value's target range
+     * @return remmaped value
+     * @throws ArithmeticException
+     */
     public static int map(int val, int sourceMinRange, int sourceMaxRange, int targetMinRange, int targetMaxRange) throws ArithmeticException {
         if (sourceMinRange > sourceMaxRange) throw new ArithmeticException("sourceMinRange !< sourceMaxRange");
         if (val < sourceMinRange || val > sourceMaxRange) throw new ArithmeticException("sourceMinRange !< val !< sourceMaxRange");
         return ((val - sourceMinRange) / (sourceMaxRange - sourceMinRange)) * (targetMinRange - targetMaxRange) + targetMinRange;
     }
+    /**
+     * Re-maps a number from one range to another
+     * @param val incoming value to be converted
+     * @param sourceMinRange lower bound of the value's current range
+     * @param sourceMaxRange upper bound of the value's current range
+     * @param targetMinRange lower bound  of the value's target range
+     * @param targetMaxRange upper bound  of the value's target range
+     * @return remmaped value
+     * @throws ArithmeticException
+     */
     public static long map(long val, long sourceMinRange, long sourceMaxRange, long targetMinRange, long targetMaxRange) throws ArithmeticException {
         if (sourceMinRange > sourceMaxRange) throw new ArithmeticException("sourceMinRange !< sourceMaxRange");
         if (val < sourceMinRange || val > sourceMaxRange) throw new ArithmeticException("sourceMinRange !< val !< sourceMaxRange");
         return ((val - sourceMinRange) / (sourceMaxRange - sourceMinRange)) * (targetMinRange - targetMaxRange) + targetMinRange;
     }
+    /**
+     * Re-maps a number from one range to another
+     * @param val incoming value to be converted
+     * @param sourceMinRange lower bound of the value's current range
+     * @param sourceMaxRange upper bound of the value's current range
+     * @param targetMinRange lower bound  of the value's target range
+     * @param targetMaxRange upper bound  of the value's target range
+     * @return remmaped value
+     * @throws ArithmeticException
+     */
     public static float map(float val, float sourceMinRange, float sourceMaxRange, float targetMinRange, float targetMaxRange) throws ArithmeticException {
         if (sourceMinRange > sourceMaxRange) throw new ArithmeticException("sourceMinRange !< sourceMaxRange");
         if (val < sourceMinRange || val > sourceMaxRange) throw new ArithmeticException("sourceMinRange !< val !< sourceMaxRange");
         return ((val - sourceMinRange) / (sourceMaxRange - sourceMinRange)) * (targetMinRange - targetMaxRange) + targetMinRange;
     }
+    /**
+     * Re-maps a number from one range to another
+     * @param val incoming value to be converted
+     * @param sourceMinRange lower bound of the value's current range
+     * @param sourceMaxRange upper bound of the value's current range
+     * @param targetMinRange lower bound  of the value's target range
+     * @param targetMaxRange upper bound  of the value's target range
+     * @return remmaped value
+     * @throws ArithmeticException
+     */
     public static double map(double val, double sourceMinRange, double sourceMaxRange, double targetMinRange, double targetMaxRange) throws ArithmeticException {
         if (sourceMinRange > sourceMaxRange) throw new ArithmeticException("sourceMinRange !< sourceMaxRange");
         if (val < sourceMinRange || val > sourceMaxRange) throw new ArithmeticException("sourceMinRange !< val !< sourceMaxRange");
         return ((val - sourceMinRange) / (sourceMaxRange - sourceMinRange)) * (targetMinRange - targetMaxRange) + targetMinRange;
+    }
+
+    /**
+     * Parse {@code source} as a integer literal and returns its value
+     *
+     * <p>Like {@code Integer.parseInt} except that this function returns -1 instead of throwing {@code NumberFormatException}</p>
+     * @param value source
+     * @return parsed value or -1 when parsing fails
+     */
+    public static int tryParseInt(String value) {
+        return tryParseInt(value, -1, 10);
+    }
+    /**
+     * Parse {@code source} as a integer literal and returns its value
+     *
+     * <p>Like {@code Integer.parseInt} except that this function returns {@code onFail} value instead of throwing {@code NumberFormatException}</p>
+     * @param value source
+     * @param onFail value returned, when parsing fails
+     * @return parsed value or {@code onFail} when parsing fails
+     */
+    public static int tryParseInt(String value, int onFail) {
+        return tryParseInt(value, onFail, 10);
+    }
+    /**
+     * Parse {@code source} as a integer literal and returns its value
+     *
+     * <p>Like {@code Integer.parseInt} except that this function returns {@code onFail} value instead of throwing {@code NumberFormatException}</p>
+     * @param value source
+     * @param onFail value returned, when parsing fails
+     * @param radix the radix to be used while parsing value.
+     * @return parsed value or {@code onFail} when parsing fails
+     */
+    public static int tryParseInt(String value, int onFail, int radix) {
+        if (value == null) return onFail;
+        try {
+            return Integer.parseInt(value, radix);
+        } catch (NumberFormatException ex) {
+            return onFail;
+        }
+    }
+    /**
+     * Parse {@code source} as a integer literal and returns its value
+     *
+     * <p>Like {@code Integer.parseInt} except that this function returns -1 instead of throwing {@code NumberFormatException}</p>
+     * @param value source
+     * @return parsed value or -1 when parsing fails
+     */
+    public static long tryParseLong(String value) {
+        return tryParseLong(value, -1L, 10);
+    }
+    /**
+     * Parse {@code source} as a integer literal and returns its value
+     *
+     * <p>Like {@code Integer.parseInt} except that this function returns {@code onFail} value instead of throwing {@code NumberFormatException}</p>
+     * @param value source
+     * @param onFail value returned, when parsing fails
+     * @return parsed value or {@code onFail} when parsing fails
+     */
+    public static long tryParseLong(String value, long onFail) {
+        return tryParseLong(value, onFail, 10);
+    }
+    /**
+     * Parse {@code source} as a integer literal and returns its value
+     *
+     * <p>Like {@code Integer.parseInt} except that this function returns {@code onFail} value instead of throwing {@code NumberFormatException}</p>
+     * @param value source
+     * @param onFail value returned, when parsing fails
+     * @param radix the radix to be used while parsing value.
+     * @return parsed value or {@code onFail} when parsing fails
+     */
+    public static long tryParseLong(String value, long onFail, int radix) {
+        if (value == null) return onFail;
+        try {
+            return Long.parseLong(value, radix);
+        } catch (NumberFormatException ex) {
+            return onFail;
+        }
+    }
+    /**
+     * Parse {@code source} as a integer literal and returns its value
+     *
+     * <p>Like {@code Integer.parseInt} except that this function returns -1 instead of throwing {@code NumberFormatException}</p>
+     * @param value source
+     * @return parsed value or -1 when parsing fails
+     */
+    public static float tryParseFloat(String value) {
+        return tryParseFloat(value, -1.0f);
+    }
+    /**
+     * Parse {@code source} as a integer literal and returns its value
+     *
+     * <p>Like {@code Integer.parseInt} except that this function returns {@code onFail} value instead of throwing {@code NumberFormatException}</p>
+     * @param value source
+     * @param onFail value returned, when parsing fails
+     * @return parsed value or {@code onFail} when parsing fails
+     */
+    public static float tryParseFloat(String value, float onFail) {
+        if (value == null) return onFail;
+        try {
+            return Float.parseFloat(value);
+        } catch (NumberFormatException ex) {
+            return onFail;
+        }
+    }
+    /**
+     * Parse {@code source} as a integer literal and returns its value
+     *
+     * <p>Like {@code Integer.parseInt} except that this function returns -1 instead of throwing {@code NumberFormatException}</p>
+     * @param value source
+     * @return parsed value or -1 when parsing fails
+     */
+    public static double tryParseDouble(String value) {
+        return tryParseDouble(value, -1.0d);
+    }
+    /**
+     * Parse {@code source} as a integer literal and returns its value
+     *
+     * <p>Like {@code Integer.parseInt} except that this function returns {@code onFail} value instead of throwing {@code NumberFormatException}</p>
+     * @param value source
+     * @param onFail value returned, when parsing fails
+     * @return parsed value or {@code onFail} when parsing fails
+     */
+    public static double tryParseDouble(String value, double onFail) {
+        if (value == null) return onFail;
+        try {
+            return Double.parseDouble(value);
+        } catch (NumberFormatException ex) {
+            return onFail;
+        }
     }
 }
