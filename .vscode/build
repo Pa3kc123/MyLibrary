@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 declare -r TRUE=0
 declare -r FALSE=1
 
@@ -8,11 +10,7 @@ function exist() {
 }
 
 # Constants
-# workspaceDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"/..
 workspaceDir=$(pwd)/..
-javac=$jdk6_64/bin/javac
-javah=$jdk6_64/bin/javah
-jar=$jdk6_64/bin/jar
 
 # Configuration
 dllName=CmdUtils
@@ -39,28 +37,28 @@ if ! [ -d $binDir ]; then mkdir $binDir; fi
 #Compiling java files
 echo Compiling java files
 find $srcDir -name *.java -type f > $tmpFile
-$javac -d $binDir -sourcepath $srcDir @$tmpFile
+javac -d $binDir -sourcepath $srcDir @$tmpFile
 
 #Creating C header base on compiled java files
 echo Creating C headers
-$javah -jni -d $nativeDir -classpath $binDir @$workspaceDir/.vscode/nativeClassFiles.txt
+javah -jni -d $nativeDir -classpath $binDir /tmp/nativeClassFiles.txt
 
 #Building shared libraries for win32 and win64
 if exist gcc32; then
     echo Building win32 dll
-    gcc32 -I$jdk6_32/include -I$jdk6_32/include/win32 -I$nativeDir -shared -o $binDir/$dllName'32.dll' $nativeDir/$dllName'.c'
+    gcc32 -I/usr/lib/jvm/jdk1.6.0_45_i586/include -I/usr/lib/jvm/jdk1.6.0_45_i586/include/win32 -I$nativeDir -shared -o $binDir/$dllName'32.dll' $nativeDir/$dllName'.c'
 else
     echo "Missing gcc32 (Symbolic link to i686-mingw32-gcc-win32)"
 fi
 
 if exist gcc64; then
     echo Building win64 dll
-    gcc64 -I$jdk6_64/include -I$jdk6_64/include/win32 -I$nativeDir -shared -o $binDir/$dllName'64.dll' $nativeDir/$dllName'.c'
+    gcc64 -I$/usr/lib/jvm/jdk1.6.0_45_x64/include -I$/usr/lib/jvm/jdk1.6.0_45_x64/include/win32 -I$nativeDir -shared -o $binDir/$dllName'64.dll' $nativeDir/$dllName'.c'
 else
     echo "Missing gcc64 (Symbolic link to x64-w64-mingw32-gcc-win32)"
 fi
 
 #Generating jar with all builded files
 echo Generating jar
-$jar -cfe $outputJar sk.pa3kc.mylibrary.Universal -C $binDir .
-$jar -cf $sourceJar -C $srcDir sk
+jar -cfe $outputJar sk.pa3kc.mylibrary.Universal -C $binDir .
+jar -cf $sourceJar -C $srcDir sk

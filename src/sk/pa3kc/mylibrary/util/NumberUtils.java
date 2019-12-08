@@ -198,9 +198,9 @@ public abstract class NumberUtils
         }
     }
     /**
-     * Parse {@code source} as a integer literal and returns its value
+     * Parse {@code source} as a long literal and returns its value
      *
-     * <p>Like {@code Integer.parseInt} except that this function returns -1 instead of throwing {@code NumberFormatException}</p>
+     * <p>Like {@code Long.parseLong} except that this function returns -1 instead of throwing {@code NumberFormatException}</p>
      * @param value source
      * @return parsed value or -1 when parsing fails
      */
@@ -208,9 +208,9 @@ public abstract class NumberUtils
         return tryParseLong(value, -1L, 10);
     }
     /**
-     * Parse {@code source} as a integer literal and returns its value
+     * Parse {@code source} as a long literal and returns its value
      *
-     * <p>Like {@code Integer.parseInt} except that this function returns {@code onFail} value instead of throwing {@code NumberFormatException}</p>
+     * <p>Like {@code Long.parseLong} except that this function returns {@code onFail} value instead of throwing {@code NumberFormatException}</p>
      * @param value source
      * @param onFail value returned, when parsing fails
      * @return parsed value or {@code onFail} when parsing fails
@@ -219,9 +219,9 @@ public abstract class NumberUtils
         return tryParseLong(value, onFail, 10);
     }
     /**
-     * Parse {@code source} as a integer literal and returns its value
+     * Parse {@code source} as a long literal and returns its value
      *
-     * <p>Like {@code Integer.parseInt} except that this function returns {@code onFail} value instead of throwing {@code NumberFormatException}</p>
+     * <p>Like {@code Long.parseLong} except that this function returns {@code onFail} value instead of throwing {@code NumberFormatException}</p>
      * @param value source
      * @param onFail value returned, when parsing fails
      * @param radix the radix to be used while parsing value.
@@ -236,9 +236,9 @@ public abstract class NumberUtils
         }
     }
     /**
-     * Parse {@code source} as a integer literal and returns its value
+     * Parse {@code source} as a float literal and returns its value
      *
-     * <p>Like {@code Integer.parseInt} except that this function returns -1 instead of throwing {@code NumberFormatException}</p>
+     * <p>Like {@code Float.parseFloat} except that this function returns -1 instead of throwing {@code NumberFormatException}</p>
      * @param value source
      * @return parsed value or -1 when parsing fails
      */
@@ -246,9 +246,9 @@ public abstract class NumberUtils
         return tryParseFloat(value, -1.0f);
     }
     /**
-     * Parse {@code source} as a integer literal and returns its value
+     * Parse {@code source} as a float literal and returns its value
      *
-     * <p>Like {@code Integer.parseInt} except that this function returns {@code onFail} value instead of throwing {@code NumberFormatException}</p>
+     * <p>Like {@code Float.parseFloat} except that this function returns {@code onFail} value instead of throwing {@code NumberFormatException}</p>
      * @param value source
      * @param onFail value returned, when parsing fails
      * @return parsed value or {@code onFail} when parsing fails
@@ -262,9 +262,9 @@ public abstract class NumberUtils
         }
     }
     /**
-     * Parse {@code source} as a integer literal and returns its value
+     * Parse {@code source} as a double literal and returns its value
      *
-     * <p>Like {@code Integer.parseInt} except that this function returns -1 instead of throwing {@code NumberFormatException}</p>
+     * <p>Like {@code Double.parseDouble} except that this function returns -1 instead of throwing {@code NumberFormatException}</p>
      * @param value source
      * @return parsed value or -1 when parsing fails
      */
@@ -272,9 +272,9 @@ public abstract class NumberUtils
         return tryParseDouble(value, -1.0d);
     }
     /**
-     * Parse {@code source} as a integer literal and returns its value
+     * Parse {@code source} as a double literal and returns its value
      *
-     * <p>Like {@code Integer.parseInt} except that this function returns {@code onFail} value instead of throwing {@code NumberFormatException}</p>
+     * <p>Like {@code Double.parseDouble} except that this function returns {@code onFail} value instead of throwing {@code NumberFormatException}</p>
      * @param value source
      * @param onFail value returned, when parsing fails
      * @return parsed value or {@code onFail} when parsing fails

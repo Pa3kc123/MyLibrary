@@ -160,7 +160,7 @@ public class ArrayUtils {
     public static <T> int find(T[] arr, T value, int index, int length) {
         if (arr == null) throw new NullPointerException("arr cannot be null");
         if (value == null) throw new NullPointerException("value cannot be null");
-        if (!NumberUtils.isWithinRange(arr.length, index, length))
+        if (index > arr.length || length < arr.length)
             throw new IndexOutOfBoundsException("Arr length" + arr.length + " | index = " + index + " | length = " + length);
 
         for (int i = index; i < index + length; i++)

@@ -6,8 +6,8 @@
                 "${workspaceFolder}/src/native",
                 "C:/cygwin/usr/include",
                 "C:/cygwin/usr/i686-w64-mingw32/sys-root/mingw/include",
-                "C:/Program Files (x86)/Java/jdk1.8.0_202/include",
-                "C:/Program Files (x86)/Java/jdk1.8.0_202/include/win32"
+                "C:/Program Files (x86)/Java/jdk1.8.0_232/include",
+                "C:/Program Files (x86)/Java/jdk1.8.0_232/include/win32"
             ],
             "defines": [
                 "_DEBUG",
@@ -22,8 +22,8 @@
                 "${workspaceFolder}/src/native",
                 "C:/cygwin/usr/include",
                 "C:/cygwin/usr/x86_64-w64-mingw32/sys-root/mingw/include",
-                "C:/Program Files/Java/jdk1.8.0_202/include",
-                "C:/Program Files/Java/jdk1.8.0_202/include/win32"
+                "C:/Program Files/Java/jdk1.8.0_232/include",
+                "C:/Program Files/Java/jdk1.8.0_232/include/win32"
             ],
             "defines": [
                 "_DEBUG",
