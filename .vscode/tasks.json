@@ -4,18 +4,11 @@
         {
             "label": "generate jar",
             "type": "shell",
-            "linux": {
-                "options": {
-                    "cwd": "${workspaceFolder}/.vscode"
-                },
-                "command": "./build",
-            },
-            "windows": {
-                "options": {
-                    "cwd": "${workspaceFolder}\\.vscode"
-                },
-                "command": "build.bat",
-            },
+            "command": "mvn",
+            "args": [
+                "clean",
+                "install"
+            ],
             "group": {
                 "kind": "build",
                 "isDefault": true

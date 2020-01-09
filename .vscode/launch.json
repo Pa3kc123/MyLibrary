@@ -6,12 +6,10 @@
             "name": "Debug Universal<MyLibrary>",
             "request": "launch",
             "projectName": "MyLibrary",
-            "windows": {
-                "cwd": "${workspaceFolder}\\bin",
-            },
-            "linux": {
-                "cwd": "${workspaceFolder}/bin",
-            },
+            "classPaths": [
+                "${workspaceFolder}/bin/classes"
+            ],
+            "cwd": "${workspaceFolder}/bin/classes",
             "mainClass": "sk.pa3kc.mylibrary.Universal",
         }
     ]
