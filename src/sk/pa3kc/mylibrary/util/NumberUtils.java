@@ -13,12 +13,12 @@ public abstract class NumberUtils
     public static double round(double value, int places) {
         if (places <= 0) places = 0;
 
-        double mult = 1;
+        int mult = 1;
 
         for (int i = 0; i < places; i++)
             mult *= 10d;
 
-        return (double)(Math.round(value * mult) / mult);
+        return ((double)((int)((value * mult) + 0.5d))) / mult;
     }
 
     /**
@@ -30,12 +30,12 @@ public abstract class NumberUtils
     public static float round(float value, int places) {
         if (places <= 0) places = 0;
 
-        float mult = 1;
+        int mult = 1;
 
         for (int i = 0; i < places; i++)
             mult *= 10f;
 
-        return (float)(Math.round(value * mult) / mult);
+        return ((float)((int)((value * mult) + 0.5d))) / mult;
     }
 
     /**
