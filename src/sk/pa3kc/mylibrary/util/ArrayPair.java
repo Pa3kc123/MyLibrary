@@ -30,8 +30,9 @@ public class ArrayPair<T> implements Iterable<T> {
     }
 
     public void setIndex(int value) throws IndexOutOfBoundsException {
-        if (value < 0 || value == arr1.length || value == arr2.length)
+        if (value < 0 || value == arr1.length || value == arr2.length) {
             throw new IndexOutOfBoundsException("Index was set to " + value);
+        }
         this.index = value;
     }
 
@@ -49,9 +50,7 @@ public class ArrayPair<T> implements Iterable<T> {
             }
 
             @Override
-            public void remove() {
-
-            }
+            public void remove() {}
         };
     }
 }

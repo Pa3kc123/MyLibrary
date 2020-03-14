@@ -7,7 +7,7 @@
             "command": "mvn",
             "args": [
                 "clean",
-                "install"
+                "compile"
             ],
             "group": {
                 "kind": "build",
