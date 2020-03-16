@@ -36,15 +36,17 @@ public class JsonParser {
             break;
 
             case 'n':
-
+                if ("null".equals(jsonString.substring(startIndex, startIndex + 4))) {
+                    json.put(key, null);
+                } else throw new RuntimeException("Invalid json");
             break;
 
             case '{':
-
+                json.put(key, decodeJsonObject(jsonString));
             break;
 
             case '[':
-
+                json.put(key, decodeJsonArray(jsonString));
             break;
 
             case '0':
@@ -84,31 +86,6 @@ public class JsonParser {
         if (!checkBrackets(jsonString)) throw new RuntimeException("Invalid json");
 
         return decodeJsonArray(jsonString, new ArrayList<Object>());
-    }
-
-    private static boolean checkBrackets(CharSequence jsonString) {
-        if (jsonString == null) return false;
-
-        int roundBrackets = 0;
-        int squareBrackets = 0;
-        for (int i = 0; i < jsonString.length(); i++) {
-            final char character = jsonString.charAt(i);
-
-            if (character == '\\') {
-                i++;
-                continue;
-            }
-
-            switch (jsonString.charAt(i)) {
-                case '(': roundBrackets++; break;
-                case ')': roundBrackets--; break;
-
-                case '[': squareBrackets++; break;
-                case ']': squareBrackets--; break;
-            }
-        }
-
-        return roundBrackets == 0 && squareBrackets == 0;
     }
     //#endregion
 
@@ -194,6 +171,30 @@ public class JsonParser {
     //#endregion
 
     //#region Utility functions
+    private static boolean checkBrackets(CharSequence jsonString) {
+        if (jsonString == null) return false;
+
+        int curlyBrackets = 0;
+        int squareBrackets = 0;
+        for (int i = 0; i < jsonString.length(); i++) {
+            final char character = jsonString.charAt(i);
+
+            if (character == '\\') {
+                i++;
+                continue;
+            }
+
+            switch (character) {
+                case '{': curlyBrackets++; break;
+                case '}': curlyBrackets--; break;
+
+                case '[': squareBrackets++; break;
+                case ']': squareBrackets--; break;
+            }
+        }
+
+        return curlyBrackets == 0 && squareBrackets == 0;
+    }
     private static int findSymbol(String jsonString, int startIndex, char... syms) {
         if (startIndex == -1) throw new RuntimeException("Invalid json");
 
@@ -208,6 +209,41 @@ public class JsonParser {
 
             break;
         }
+        throw new RuntimeException("Invalid json");
+    }
+    private static int findEndBracket(String jsonString, int startIndex) {
+        if (startIndex == -1) throw new RuntimeException("Invalid json");
+
+        int squareBrackets = 0;
+        int curlyBrackets = 0;
+
+        switch (jsonString.charAt(startIndex++)) {
+            case '[': squareBrackets++; break;
+            case '{': curlyBrackets++; break;
+        }
+
+        while (startIndex < jsonString.length()) {
+            final char character = jsonString.charAt(startIndex);
+
+            if (character == '\\') {
+                startIndex++;
+                continue;
+            }
+
+            switch (character) {
+                case '{': curlyBrackets++; break;
+                case '}': curlyBrackets--; break;
+
+                case '[': squareBrackets++; break;
+                case ']': squareBrackets--; break;
+            }
+
+            if (squareBrackets == 0 && curlyBrackets == 0) {
+                return startIndex;
+            }
+            startIndex++;
+        }
+
         throw new RuntimeException("Invalid json");
     }
     //#endregion
