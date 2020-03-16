@@ -10,16 +10,55 @@ public class JsonParser {
 
     //#region Decode Json
     private static HashMap<String, Object> decodeJsonObject(String jsonString, HashMap<String, Object> json) {
-        int startIndex = jsonString.indexOf('"');
-        int endIndex = jsonString.indexOf('"', startIndex + 1);
+        int startIndex;
+        int endIndex;
 
-        if (startIndex == -1 || endIndex == -1) return json;
+        startIndex = findSymbol(jsonString, jsonString.indexOf('{'), '\"');
+        endIndex = findSymbol(jsonString, startIndex, '\"');
 
-        startIndex = jsonString.indexOf('"');
-        endIndex = jsonString.indexOf('"', startIndex + 1);
+        final String key = jsonString.substring(startIndex + 1, endIndex);
 
-        for (; startIndex != -1 || endIndex != -1; startIndex = jsonString.indexOf('"', startIndex), endIndex = jsonString.indexOf('"', startIndex)) {
+        startIndex = findSymbol(jsonString, findSymbol(jsonString, endIndex, ':'), '\"', 't', 'f', 'n', '{', '[', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
 
+        switch (jsonString.charAt(startIndex)) {
+            case '\"':
+                endIndex = findSymbol(jsonString, startIndex, '\"');
+                json.put(key, jsonString.substring(startIndex + 1, endIndex));
+            break;
+
+            case 't':
+            case 'f':
+                endIndex = jsonString.indexOf(',');
+                if (endIndex == -1) {
+                    endIndex = findSymbol(jsonString, startIndex, '}');
+                }
+                json.put(key, Boolean.valueOf(jsonString.substring(startIndex, endIndex).trim()));
+            break;
+
+            case 'n':
+
+            break;
+
+            case '{':
+
+            break;
+
+            case '[':
+
+            break;
+
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+
+            break;
         }
 
         return json;
@@ -151,6 +190,25 @@ public class JsonParser {
 
     public static String encodeJsonArray(List<Object> list) {
         return encodeJsonArray(list, new StringBuilder()).toString();
+    }
+    //#endregion
+
+    //#region Utility functions
+    private static int findSymbol(String jsonString, int startIndex, char... syms) {
+        if (startIndex == -1) throw new RuntimeException("Invalid json");
+
+        while (startIndex < jsonString.length()) {
+            final char stringSym = jsonString.charAt(startIndex++);
+
+            if (stringSym == ' ' || stringSym == '\n' || stringSym == '\r' || stringSym == '\t') continue;
+
+            for (final char sym : syms) {
+                if (stringSym == sym) return startIndex;
+            }
+
+            break;
+        }
+        throw new RuntimeException("Invalid json");
     }
     //#endregion
 }

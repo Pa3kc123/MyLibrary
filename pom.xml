@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>sk.pa3kc.mylibrary</groupId>
   <artifactId>MyLibrary</artifactId>
-  <version>1.0</version>
+  <version>1.1</version>
   <packaging>jar</packaging>
 
   <properties>
