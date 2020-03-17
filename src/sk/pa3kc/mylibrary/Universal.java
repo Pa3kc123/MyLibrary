@@ -1,13 +1,9 @@
 package sk.pa3kc.mylibrary;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import sk.pa3kc.mylibrary.cmd.CmdColor;
 import sk.pa3kc.mylibrary.cmd.CmdUtils;
 import sk.pa3kc.mylibrary.net.Device;
-import sk.pa3kc.mylibrary.util.JsonParser;
+import sk.pa3kc.mylibrary.json.JsonParser;
 import sk.pa3kc.mylibrary.util.NumberUtils;
 
 public class Universal {
@@ -43,30 +39,7 @@ public class Universal {
             ex.printStackTrace(System.out);
         }
 
-        System.out.println(JsonParser.encodeJsonObject(new HashMap<String, Object>() {{
-            super.put("glossary", new HashMap<String, Object>() {{
-                super.put("title", "example glossary");
-                super.put("GlossDiv", new HashMap<String, Object>() {{
-                    super.put("title", "S");
-                    super.put("GlossList", new HashMap<String, Object>() {{
-                        super.put("GlossEntry", new HashMap<String, Object>() {{
-                            super.put("ID", "SGML");
-                            super.put("SortAs", "SGML");
-                            super.put("GlossTerm", "Standard Generalized Markup Language");
-                            super.put("Acronym", "SGML");
-                            super.put("Abbrev", "ISO 8879:1986");
-                            super.put("GlossDef", new HashMap<String, Object>() {{
-                                super.put("para", "A meta-markup language, used to create markup languages such as DocBook.");
-                                super.put("GlossSeeAlso", new ArrayList<Object>() {{
-                                    super.add("GML");
-                                    super.add("XML");
-                                }});
-                            }});
-                            super.put("GlossSee", "markup");
-                        }});
-                    }});
-                }});
-            }});
-        }}));
+        JsonParser.decodeJsonObject("    {\"widget\": {\"debug\": \"on\",\"window\": {\"title\": \"Sample Konfabulator Widget\",\"name\": \"main_window\",\"width\": 500,\"height\": 500},\"image\": { \"src\": \"Images/Sun.png\",\"name\": \"sun1\",\"hOffset\": 250,\"vOffset\": 250,\"alignment\": \"center\"},\"text\": {\"data\": \"Click Here\",\"size\": 36,\"style\": \"bold\",\"name\": \"text1\",\"hOffset\": 250,\"vOffset\": 100,\"alignment\": \"center\",\"onMouseUp\": \"sun1.opacity = (sun1.opacity / 100) * 90;\"}}}  ");
+        System.out.println();
     }
 }
