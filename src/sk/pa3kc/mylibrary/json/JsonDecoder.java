@@ -2,11 +2,91 @@ package sk.pa3kc.mylibrary.json;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+
+class StringStream implements Iterator<Character> {
+    private final char[] arr;
+    private int index = 0;
+
+    private Character nextChar;
+
+    public final int length;
+
+    StringStream(String string) {
+        this(string.toCharArray());
+    }
+    StringStream(char[] arr) {
+        this.arr = arr;
+        this.length = arr.length;
+
+        this.nextChar = arr[0];
+    }
+
+    public int index() {
+        return this.index - 1;
+    }
+    public char get(int index) {
+        if (index < 0 || index > this.length) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        return this.arr[index];
+    }
+    public char[] getRange(int startIndex) {
+        if (startIndex < 0 || startIndex > this.length) throw new IndexOutOfBoundsException();
+
+        return this.getRange(startIndex, this.length - startIndex);
+    }
+    public char[] getRange(int startIndex, int length) {
+        if (startIndex < 0 || startIndex > this.length || startIndex + length < 0 || startIndex + length > this.length) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        final char[] arr = new char[length];
+
+        for (int i = 0; i < length; i++) {
+            arr[i] = this.arr[startIndex++];
+        }
+
+        return arr;
+    }
+
+    @Override
+    public boolean hasNext() {
+        return this.index < arr.length;
+    }
+
+    @Override
+    public Character next() {
+        while (this.hasNext()) {
+            final char ch = this.arr[this.index++];
+
+            //debug Hello Worlds
+            this.nextChar = this.index < this.length ? this.arr[this.index] : null;
+
+            if (ch != ' ' && ch != '\n' && ch != '\r' && ch != '\t') {
+                return ch;
+            }
+        }
+
+        return null;
+    }
+
+    public int findNext(char ch) {
+        while (this.hasNext()) {
+            if (this.arr[this.index++] == ch) return this.index - 1;
+        }
+
+        return -1;
+    }
+}
 
 abstract class JsonDecoder {
     private static final String JSON_NULL = "null";
     private static final String JSON_TRUE = "true";
     private static final String JSON_FALSE = "false";
+
+    private static final RuntimeException INVALID_JSON_EX = new RuntimeException("Invalid json");
 
     private JsonDecoder() {}
 
@@ -15,187 +95,276 @@ abstract class JsonDecoder {
     // json is trimmed
     // json is bracket and quotation mark checked
     static HashMap<String, Object> decodeJsonObject(String jsonString, HashMap<String, Object> output) {
-        int index;
+        final StringStream stream = new StringStream(jsonString);
 
-        index = indexOf(jsonString, jsonString.indexOf('{') + 1, '\"') + 1;
+        if (stream.next() != '{') {
+            throw INVALID_JSON_EX;
+        }
 
-        final String key = string(jsonString, index);
+        while (stream.hasNext()) {
+            if (stream.next() != '"') throw INVALID_JSON_EX;
+            final String key = string(stream);
 
-        index = indexOf(jsonString, index + key.length() + 1, ':') + 1;
+            if (stream.next() != ':') throw INVALID_JSON_EX;
 
-        for (char ch = jsonString.charAt(index); index < jsonString.length(); ch = jsonString.charAt(index++)) {
-            switch (ch) {
-                case '\"': {
-                    index++;
-                    final String value = string(jsonString, index);
-                    output.put(key, value);
-                    index += value.length() + 1;
+            if ("useJSP".equals(key)) {
+                System.out.flush();
+            }
+
+            valueLoop:
+            while (stream.hasNext()) {
+                final char ch = stream.next();
+
+                switch (ch) {
+                    case '"': output.put(key, string(stream)); break valueLoop;
+
+                    case 't':
+                    case 'f':
+                    case 'n':
+                        final int length = ch == 'f' ? 5 : 4;
+                        final String value = new String(stream.getRange(stream.index(), length));
+
+                        for (int i = 0; i < length - 1; i++) {
+                            stream.next();
+                        }
+
+                        if (JSON_TRUE.equals(value)) {
+                            output.put(key, true);
+                        } else if (JSON_FALSE.equals(value)) {
+                            output.put(key, false);
+                        } else if (JSON_NULL.equals(value)) {
+                            output.put(key, null);
+                        } else {
+                            throw INVALID_JSON_EX;
+                        }
+                    break valueLoop;
+
+                    case '{':
+                        output.put(key, decodeJsonObject(object(stream), new HashMap<String, Object>()));
+                    break valueLoop;
+
+                    case '[':
+                        output.put(key, decodeJsonArray(array(stream), new ArrayList<Object>()));
+                    break valueLoop;
+
+                    default:
+                        if (ch == '-' || (ch >= '0' && ch <= '9')) {
+                            output.put(key, number(stream));
+                        } else {
+                            throw INVALID_JSON_EX;
+                        }
+                    break valueLoop;
                 }
-                break;
+            }
 
-                case 't':
-                case 'f':
-                case 'n': {
-                    final char[] buffer = new char[ch == 'y' ? 5 : 4];
-
-                    for (int i = 0; i < buffer.length; i++) {
-                        buffer[i] = jsonString.charAt(index++);
-                    }
-
-                    final String value = new String(buffer);
-
-                    if (JSON_TRUE.equals(value)) {
-                        output.put(key, true);
-                    } else if (JSON_FALSE.equals(value)) {
-                        output.put(key, false);
-                    } else if (JSON_NULL.equals(value)) {
-                        output.put(key, null);
-                    } else {
-                        throw new RuntimeException("Invalid json");
-                    }
-                }
-                break;
-
-                case '{': {
-                    final String value = object(jsonString, index);
-                    output.put(key, decodeJsonObject(value, new HashMap<String, Object>()));
-                    index += value.length() + 1;
-                }
-                break;
-
-                case '[': {
-                    final String value = array(jsonString, index);
-                    output.put(key, decodeJsonArray(jsonString, new ArrayList<Object>()));
-                    index += value.length() + 1;
-                }
-                break;
-
-                default:
-                    if (ch == '-' || ch >= 0 && ch <= 9) {
-                        index += number(jsonString, index, key, output);
-                    } else if (isWhitespace(ch) || ch == ',') {
-                        continue;
-                    } else {
-                        throw new RuntimeException("Invalid json");
-                    }
-                break;
+            final char ch = stream.next();
+            if (ch != ',' && ch != '}') {
+                throw INVALID_JSON_EX;
             }
         }
 
         return output;
     }
 
-
     static ArrayList<Object> decodeJsonArray(String jsonString, ArrayList<Object> list) {
+        final StringStream stream = new StringStream(jsonString);
+
+        if (stream.next() != '[') throw INVALID_JSON_EX;
+
+        while (stream.hasNext()) {
+            valueLoop:
+            while (stream.hasNext()) {
+                final char ch = stream.next();
+
+                switch (ch) {
+                    case '"': list.add(string(stream)); break valueLoop;
+
+                    case 't':
+                    case 'f':
+                    case 'n': {
+                        final String value = new String(stream.getRange(stream.index(), ch == 'f' ? 5 : 4));
+
+                        if (JSON_TRUE.equals(value)) {
+                            list.add(true);
+                        } else if (JSON_FALSE.equals(value)) {
+                            list.add(false);
+                        } else if (JSON_NULL.equals(value)) {
+                            list.add(null);
+                        } else {
+                            throw INVALID_JSON_EX;
+                        }
+                    }
+                    break valueLoop;
+
+                    case '{':
+                        list.add(decodeJsonObject(object(stream), new HashMap<String, Object>()));
+                    break valueLoop;
+
+                    case '[':
+                        list.add(decodeJsonArray(array(stream), new ArrayList<Object>()));
+                    break valueLoop;
+
+                    default:
+                        if (ch == '-' || (ch >= '0' && ch <= '9')) {
+                            list.add(number(stream));
+                        } else {
+                            throw INVALID_JSON_EX;
+                        }
+                    break valueLoop;
+                }
+            }
+
+            final char ch = stream.next();
+            if (ch != ',' && ch != ']') {
+                throw INVALID_JSON_EX;
+            }
+        }
+
         return list;
     }
 
 
-    private static String object(String jsonString, int index) {
+    private static String object(StringStream stream) {
+        int index = stream.index();
         int bracketCount = 1;
         boolean isWithinString = false;
-        for (int tmpIndex = index; tmpIndex < jsonString.length(); tmpIndex++) {
-            final char ch = jsonString.charAt(tmpIndex);
 
-            if (ch == '\"') isWithinString = !isWithinString;
+        while (stream.hasNext()) {
+            final char ch = stream.next();
+
+            if (ch == '"') {
+                isWithinString = !isWithinString;
+                continue;
+            }
 
             if (!isWithinString) {
                 if (ch == '{') bracketCount++;
                 if (ch == '}') bracketCount--;
-            }
 
-            if (bracketCount == 0) return jsonString.substring(index - 1, tmpIndex + 1);
+                if (bracketCount == 0) {
+                    return new String(stream.getRange(index, stream.index() - index + 1));
+                }
+            }
         }
-        throw new RuntimeException("Invalid json");
+
+        throw INVALID_JSON_EX;
     }
-    private static String array(String jsonString, int index) {
+    private static String array(StringStream stream) {
+        int index = stream.index();
         int bracketCount = 1;
         boolean isWithinString = false;
-        for (int tmpIndex = index; tmpIndex < jsonString.length(); tmpIndex++) {
-            final char ch = jsonString.charAt(tmpIndex);
 
-            if (ch == '\"') isWithinString = !isWithinString;
+        while (stream.hasNext()) {
+            final char ch = stream.next();
+
+            if (ch == '"') isWithinString = !isWithinString;
 
             if (!isWithinString) {
                 if (ch == '[') bracketCount++;
                 if (ch == ']') bracketCount--;
+
+                if (bracketCount == 0) {
+                    return new String(stream.getRange(index, stream.index() - index + 1));
+                }
             }
 
-            if (bracketCount == 0) return jsonString.substring(index, tmpIndex + 1);
         }
-        throw new RuntimeException("Invalid json");
+
+        throw INVALID_JSON_EX;
     }
-    private static String string(String jsonString, int index) {
-        for (int tmpIndex = jsonString.indexOf('\"', index); tmpIndex != -1; tmpIndex = jsonString.indexOf('\"', index)) {
-            if (jsonString.charAt(tmpIndex - 1) != '\\') {
-                return jsonString.substring(index, tmpIndex);
-            } else {
-                index = tmpIndex + 1;
+    private static String string(StringStream stream) {
+        final int index = stream.index() + 1;
+
+        while (stream.hasNext()) {
+            if (stream.next() == '"' && stream.get(stream.index() - 1) != '\\') {
+                return new String(stream.getRange(index, stream.index() - index));
             }
         }
-        throw new RuntimeException("Invalid json");
+
+        throw INVALID_JSON_EX;
     }
-    private static int number(String jsonString, int index, String key, HashMap<String, Object> output) {
-        int tmpIndex = index;
+    private static Object number(StringStream stream) {
         final StringBuilder builder = new StringBuilder();
 
-        if (jsonString.charAt(tmpIndex) == '-') {
-            builder.append(jsonString.charAt(tmpIndex++));
+        char ch = stream.get(stream.index());
+        if (ch == '-') {
+            builder.append(ch);
+            ch = stream.next();
         }
 
-        for (char c = jsonString.charAt(tmpIndex); c >= 0 && c <= 9; c = jsonString.charAt(tmpIndex++)) {
-            builder.append(c);
+        if (ch < '0' && ch > '9') throw INVALID_JSON_EX;
+
+        while (stream.hasNext()) {
+            builder.append(ch);
+
+            ch = stream.get(stream.index() + 1);
+            if (ch >= '0' && ch <= '9') {
+                stream.next();
+            } else break;
         }
 
-        final boolean isDecimal = jsonString.charAt(tmpIndex) == '.';
+        if (ch != '.' && ch != 'e' && ch != 'E') {
+            return parseNumber(builder.toString(), false);
+        }
+
+        final boolean isDecimal = ch == '.';
 
         if (isDecimal) {
-            builder.append(jsonString.charAt(tmpIndex++));
-            for (char c = jsonString.charAt(tmpIndex); c >= 0 && c <= 9; c = jsonString.charAt(tmpIndex++)) {
-                builder.append(c);
+            builder.append(ch);
+
+            while (stream.hasNext()) {
+                builder.append(ch);
+
+                ch = stream.get(stream.index() + 1);
+                if (ch >= '0' && ch <= '9') {
+                    stream.next();
+                } else break;
             }
         }
 
-        if (jsonString.charAt(tmpIndex) == 'e' || jsonString.charAt(tmpIndex) == 'E') {
-            builder.append(tmpIndex++);
-            if (jsonString.charAt(tmpIndex) == '+' || jsonString.charAt(tmpIndex) == '-') {
-                builder.append(jsonString.charAt(tmpIndex++));
-            }
-            for (char c = jsonString.charAt(tmpIndex); c >= 0 && c <= 9; c = jsonString.charAt(tmpIndex++)) {
-                builder.append(c);
+        if (ch == 'e' || ch == 'E') {
+            builder.append(ch);
+
+            ch = stream.next();
+            if (ch == '+' || ch == '-') {
+                builder.append(ch);
+            } else throw INVALID_JSON_EX;
+
+            while (stream.hasNext()) {
+                builder.append(ch);
+
+                ch = stream.get(stream.index() + 1);
+                if (ch >= '0' && ch <= '9') {
+                    stream.next();
+                } else break;
             }
         }
+
+        return parseNumber(builder.toString(), isDecimal);
+    }
+    private static Object parseNumber(String numAsString, boolean isDecimal) {
+        return isDecimal ? parseFloatingNumber(numAsString) : parseRealNumber(numAsString);
+    }
+    private static Object parseRealNumber(String numAsString) {
+        try {
+            return Integer.parseInt(numAsString);
+        } catch (NumberFormatException ex) {}
 
         try {
-            final Object value;
-            if (isDecimal) {
-                value = Double.parseDouble(builder.toString());
-            } else {
-                value = Long.parseLong(builder.toString());
-            }
-
-            output.put(key, value);
+            return Long.parseLong(numAsString);
         } catch (NumberFormatException ex) {
             throw new RuntimeException("Invalid json", ex);
         }
-
-        return tmpIndex - index;
     }
-    private static int indexOf(String jsonString, int index, char... chs) {
-        if (index == -1) throw new RuntimeException("Invalid json");
+    private static Object parseFloatingNumber(String numAsString) {
+        try {
+            return Float.parseFloat(numAsString);
+        } catch (NumberFormatException ignored) {}
 
-        for (char ch = jsonString.charAt(index); index < jsonString.length(); ch = jsonString.charAt(index++)) {
-            if (isWhitespace(ch)) continue;
-
-            for (final char sym : chs) {
-                if (ch == sym) return index;
-            }
-
-            break;
+        try {
+            return Double.parseDouble(numAsString);
+        } catch (NumberFormatException ex) {
+            throw new RuntimeException("Invalid json", ex);
         }
-        throw new RuntimeException("Invalid json");
-    }
-    private static boolean isWhitespace(char ch) {
-        return ch == ' ' || ch == '\n' || ch == '\r' || ch == '\t';
     }
 }

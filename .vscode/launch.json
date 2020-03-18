@@ -11,6 +11,9 @@
             ],
             "cwd": "${workspaceFolder}/bin/classes",
             "mainClass": "sk.pa3kc.mylibrary.Universal",
+            "args": [
+                "${workspaceFolder}/test.json"
+            ]
         }
     ]
 }

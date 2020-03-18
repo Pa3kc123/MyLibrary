@@ -1,5 +1,12 @@
 package sk.pa3kc.mylibrary;
 
+import java.io.File;
+import java.io.FileReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Map;
+
 import sk.pa3kc.mylibrary.cmd.CmdColor;
 import sk.pa3kc.mylibrary.cmd.CmdUtils;
 import sk.pa3kc.mylibrary.net.Device;
@@ -35,11 +42,29 @@ public class Universal {
                     System.out.println("Test of subnet range = " + (device.getSubNetRange().doesInvolve(device.getLocalIP()) ? "PASSED" : "FAILED"));
                 }
             }
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
             ex.printStackTrace(System.out);
         }
 
-        JsonParser.decodeJsonObject("    {\"widget\": {\"debug\": \"on\",\"window\": {\"title\": \"Sample Konfabulator Widget\",\"name\": \"main_window\",\"width\": 500,\"height\": 500},\"image\": { \"src\": \"Images/Sun.png\",\"name\": \"sun1\",\"hOffset\": 250,\"vOffset\": 250,\"alignment\": \"center\"},\"text\": {\"data\": \"Click Here\",\"size\": 36,\"style\": \"bold\",\"name\": \"text1\",\"hOffset\": 250,\"vOffset\": 100,\"alignment\": \"center\",\"onMouseUp\": \"sun1.opacity = (sun1.opacity / 100) * 90;\"}}}  ");
-        System.out.println();
+        Map<String, Object> json = null;
+        if (args.length != 0) {
+            String val = null;
+
+            try {
+                val = new String(Files.readAllBytes(Paths.get(args[0])), "utf-8");
+            } catch (Throwable ex) {
+                ex.printStackTrace();
+            }
+
+            json = JsonParser.decodeJsonObject(val);
+        }
+
+        final Map<String, Object> web_app = (Map<String, Object>)json.get("web-app");
+        final List<Object> servlet = (List<Object>)web_app.get("servlet");
+        final Map<String, Object> servlet0 = (Map<String, Object>)servlet.get(0);
+        final Map<String, Object> init_param = (Map<String, Object>)servlet0.get("init-param");
+        final Boolean useJSP = (Boolean)init_param.get("useJSP");
+
+        System.out.println("useJSP = " + useJSP);
     }
 }
