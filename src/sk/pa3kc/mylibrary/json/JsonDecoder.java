@@ -328,7 +328,8 @@ abstract class JsonDecoder {
             ch = stream.next();
             if (ch == '+' || ch == '-') {
                 builder.append(ch);
-            } else throw INVALID_JSON_EX;
+                ch = stream.next();
+            }
 
             while (stream.hasNext()) {
                 builder.append(ch);
