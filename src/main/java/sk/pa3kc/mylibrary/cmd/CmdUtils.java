@@ -1,5 +1,6 @@
 package sk.pa3kc.mylibrary.cmd;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -22,7 +23,7 @@ public class CmdUtils {
     private CmdUtils() {
         if (DefaultSystemPropertyStrings.OS_NAME.contains("Windows")) {
             StringBuilder builder = new StringBuilder();
-            builder.append(this.getClass().getSimpleName());
+            builder.append("CmdUtils");
             builder.append(DefaultSystemPropertyStrings.OS_ARCH.equals("amd64") ? 64 : 32);
             builder.append(".dll");
             String libName = builder.toString();
@@ -30,23 +31,22 @@ public class CmdUtils {
             builder.delete(0, builder.length());
             builder.append(DefaultSystemPropertyStrings.JAVA_IO_TMPDIR);
             builder.append(DefaultSystemPropertyStrings.FILE_SEPARATOR);
-            builder.append(this.getClass().getSimpleName());
+            builder.append("CmdUtils");
             builder.append(DefaultSystemPropertyStrings.FILE_SEPARATOR);
             builder.append(libName);
 
             File installedLibFile = new File(builder.toString());
-            if (installedLibFile.exists() == false) {
+            if (!installedLibFile.exists()) {
                 InputStream resource = null;
                 OutputStream stream = null;
                 try {
-                    if (installedLibFile.exists() == false) {
-                        installedLibFile.getParentFile().mkdirs();
-                        installedLibFile.createNewFile();
-                    }
+                    installedLibFile.getParentFile().mkdirs();
+                    installedLibFile.createNewFile();
+
                     resource = this.getClass().getClassLoader().getResourceAsStream(libName);
                     stream = new FileOutputStream(installedLibFile);
 
-                    byte[] buffer = new byte[1024];
+                    final byte[] buffer = new byte[1024];
                     for (int checksum = resource.read(buffer); checksum != -1; checksum = resource.read(buffer)) {
                         stream.write(buffer);
                         stream.flush();
@@ -59,7 +59,7 @@ public class CmdUtils {
             }
 
             try {
-                System.load(installedLibFile.getAbsolutePath());
+                Runtime.getRuntime().load(installedLibFile.getAbsolutePath());
             } catch (Throwable ex) {
                 ex.printStackTrace();
             }
