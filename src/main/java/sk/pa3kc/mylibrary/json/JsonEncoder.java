@@ -42,6 +42,7 @@ abstract class JsonEncoder {
         return builder;
     }
 
+    @SuppressWarnings("unchecked")
     private static StringBuilder encodeJson(Object value, StringBuilder builder) {
         if (value instanceof String) {
             builder.append('"');

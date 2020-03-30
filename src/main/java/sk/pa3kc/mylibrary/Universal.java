@@ -1,7 +1,5 @@
 package sk.pa3kc.mylibrary;
 
-import java.io.File;
-import java.io.FileReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -11,10 +9,22 @@ import sk.pa3kc.mylibrary.cmd.CmdColor;
 import sk.pa3kc.mylibrary.cmd.CmdUtils;
 import sk.pa3kc.mylibrary.net.Device;
 import sk.pa3kc.mylibrary.json.JsonParser;
+import sk.pa3kc.mylibrary.util.ArgsParser;
 import sk.pa3kc.mylibrary.util.NumberUtils;
 
 public class Universal {
+    @SuppressWarnings("unchecked")
     public static void main(String[] args) {
+        final ArgsParser parser = new ArgsParser(args);
+
+        for (String arg : parser.getAllArguments()) {
+            System.out.println(arg);
+        }
+
+        for (String key : parser.getAllOptions().keySet()) {
+            System.out.println(key + " = " + parser.getAllOptions().get(key));
+        }
+
         CmdUtils.setColor(CmdColor.RED);
         System.out.println("This text should be red");
         CmdUtils.setColor(CmdColor.GREEN);
@@ -51,7 +61,7 @@ public class Universal {
             String val = null;
 
             try {
-                val = new String(Files.readAllBytes(Paths.get(args[0])), "utf-8");
+                val = new String(Files.readAllBytes(Paths.get(parser.getArgument(1))), "utf-8");
             } catch (Throwable ex) {
                 ex.printStackTrace();
             }

@@ -1,4 +1,1 @@
-bin/
-src/native/*.h
-MyLibrary.jar
-MyLibrary-sources.jar
+target/

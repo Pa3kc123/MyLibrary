@@ -8,6 +8,7 @@ class StringStream implements Iterator<Character> {
     private final char[] arr;
     private int index = 0;
 
+    @SuppressWarnings("unused")
     private Character nextChar;
 
     public final int length;
