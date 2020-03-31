@@ -39,6 +39,8 @@ public class ArgsParser {
                         this.options.put(key, matcher.group(2));
                     }
                 }
+
+                continue;
             }
 
             if ("-".equals(arg.substring(0, 1)) && !"-".equals(arg)) {

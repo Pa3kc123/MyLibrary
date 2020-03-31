@@ -7,13 +7,13 @@
             "request": "launch",
             "projectName": "MyLibrary",
             "classPaths": [
-                "${workspaceFolder}/bin/classes"
+                "${workspaceFolder}/target/classes"
             ],
-            "cwd": "${workspaceFolder}/bin/classes",
+            "cwd": "${workspaceFolder}/target/classes",
             "mainClass": "sk.pa3kc.mylibrary.Universal",
             "args": [
-                "--debug=true",
-                "--m=69",
+                "--option1=val1",
+                "--option2-2=2val",
                 "${workspaceFolder}/test.json"
             ]
         }

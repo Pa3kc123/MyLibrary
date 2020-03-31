@@ -61,9 +61,10 @@ public class Universal {
             String val = null;
 
             try {
-                val = new String(Files.readAllBytes(Paths.get(parser.getArgument(1))), "utf-8");
+                val = new String(Files.readAllBytes(Paths.get(parser.getArgument(0))), "utf-8");
             } catch (Throwable ex) {
                 ex.printStackTrace();
+                return;
             }
 
             json = JsonParser.decodeJsonObject(val);
