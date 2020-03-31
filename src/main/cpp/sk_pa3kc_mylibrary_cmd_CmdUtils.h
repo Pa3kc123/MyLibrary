@@ -14,7 +14,8 @@ extern "C" {
  * Method:    init
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_sk_pa3kc_mylibrary_cmd_CmdUtils_init(JNIEnv *, jclass);
+JNIEXPORT void JNICALL Java_sk_pa3kc_mylibrary_cmd_CmdUtils_init
+  (JNIEnv *, jclass);
 
 #ifdef __cplusplus
 }
