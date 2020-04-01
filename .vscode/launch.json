@@ -3,9 +3,9 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Debug Universal<MyLibrary>",
+            "name": "Debug Universal<mylibrary>",
             "request": "launch",
-            "projectName": "MyLibrary",
+            "projectName": "mylibrary",
             "classPaths": [
                 "${workspaceFolder}/target/classes"
             ],

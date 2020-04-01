@@ -1,13 +1,7 @@
 package sk.pa3kc.mylibrary.cmd;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.OutputStream;
 
-import sk.pa3kc.mylibrary.DefaultSystemPropertyStrings;
-import sk.pa3kc.mylibrary.util.StreamUtils;
 import sk.pa3kc.mylibrary.util.StringUtils;
 
 public class CmdUtils {
@@ -21,51 +15,51 @@ public class CmdUtils {
     static CmdUtils getInstance() { return instance == null ? (instance = new CmdUtils()) : instance; }
 
     private CmdUtils() {
-        if (DefaultSystemPropertyStrings.OS_NAME.contains("Windows")) {
-            StringBuilder builder = new StringBuilder();
-            builder.append("CmdUtils");
-            builder.append(DefaultSystemPropertyStrings.OS_ARCH.equals("amd64") ? 64 : 32);
-            builder.append(".dll");
-            String libName = builder.toString();
+        // if (DefaultSystemPropertyStrings.OS_NAME.contains("Windows")) {
+        //     StringBuilder builder = new StringBuilder();
+        //     builder.append("CmdUtils");
+        //     builder.append(DefaultSystemPropertyStrings.OS_ARCH.equals("amd64") ? 64 : 32);
+        //     builder.append(".dll");
+        //     String libName = builder.toString();
 
-            builder.delete(0, builder.length());
-            builder.append(DefaultSystemPropertyStrings.JAVA_IO_TMPDIR);
-            builder.append(DefaultSystemPropertyStrings.FILE_SEPARATOR);
-            builder.append("CmdUtils");
-            builder.append(DefaultSystemPropertyStrings.FILE_SEPARATOR);
-            builder.append(libName);
+        //     builder.delete(0, builder.length());
+        //     builder.append(DefaultSystemPropertyStrings.JAVA_IO_TMPDIR);
+        //     builder.append(DefaultSystemPropertyStrings.FILE_SEPARATOR);
+        //     builder.append("CmdUtils");
+        //     builder.append(DefaultSystemPropertyStrings.FILE_SEPARATOR);
+        //     builder.append(libName);
 
-            File installedLibFile = new File(builder.toString());
-            if (!installedLibFile.exists()) {
-                InputStream resource = null;
-                OutputStream stream = null;
-                try {
-                    installedLibFile.getParentFile().mkdirs();
-                    installedLibFile.createNewFile();
+        //     File installedLibFile = new File(builder.toString());
+        //     if (!installedLibFile.exists()) {
+        //         InputStream resource = null;
+        //         OutputStream stream = null;
+        //         try {
+        //             installedLibFile.getParentFile().mkdirs();
+        //             installedLibFile.createNewFile();
 
-                    resource = this.getClass().getClassLoader().getResourceAsStream(libName);
-                    stream = new FileOutputStream(installedLibFile);
+        //             resource = this.getClass().getClassLoader().getResourceAsStream(libName);
+        //             stream = new FileOutputStream(installedLibFile);
 
-                    final byte[] buffer = new byte[1024];
-                    for (int checksum = resource.read(buffer); checksum != -1; checksum = resource.read(buffer)) {
-                        stream.write(buffer);
-                        stream.flush();
-                    }
-                } catch (Throwable ex) {
-                    ex.printStackTrace();
-                } finally {
-                    StreamUtils.closeStreams(stream, resource);
-                }
-            }
+        //             final byte[] buffer = new byte[1024];
+        //             for (int checksum = resource.read(buffer); checksum != -1; checksum = resource.read(buffer)) {
+        //                 stream.write(buffer);
+        //                 stream.flush();
+        //             }
+        //         } catch (Throwable ex) {
+        //             ex.printStackTrace();
+        //         } finally {
+        //             StreamUtils.closeStreams(stream, resource);
+        //         }
+        //     }
 
-            try {
-                Runtime.getRuntime().load(installedLibFile.getAbsolutePath());
-            } catch (Throwable ex) {
-                ex.printStackTrace();
-            }
+        //     try {
+        //         Runtime.getRuntime().load(installedLibFile.getAbsolutePath());
+        //     } catch (Throwable ex) {
+        //         ex.printStackTrace();
+        //     }
 
-            init();
-        }
+        //     init();
+        // }
     }
 
     public CmdColor getColorX() { return this.color; }
@@ -73,8 +67,6 @@ public class CmdUtils {
 
     private void setColorX(CmdColor value) { this.onColorChanged(this.color, value); }
     private void setStreamX(OutputStream value) { this.stream = value; }
-
-    public static native void init();
 
     private void onColorChanged(CmdColor oldColor, CmdColor newColor) {
         this.print(newColor);

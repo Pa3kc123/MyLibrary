@@ -10,6 +10,7 @@ import sk.pa3kc.mylibrary.cmd.CmdUtils;
 import sk.pa3kc.mylibrary.net.Device;
 import sk.pa3kc.mylibrary.json.JsonParser;
 import sk.pa3kc.mylibrary.util.ArgsParser;
+import sk.pa3kc.mylibrary.util.FloatMath;
 import sk.pa3kc.mylibrary.util.NumberUtils;
 
 public class Universal {
@@ -77,5 +78,20 @@ public class Universal {
         final Boolean useJSP = (Boolean)init_param.get("useJSP");
 
         System.out.println("useJSP = " + useJSP);
+
+        long milis;
+        int cycles = 1000000;
+
+        milis = System.currentTimeMillis();
+        for (int i = 1; i <= cycles; i++) {
+            StrictMath.sqrt((double)i);
+        }
+        System.out.println("Java sqrt took " + (System.currentTimeMillis() - milis) + "ms");
+
+        milis = System.currentTimeMillis();
+        for (int i = 1; i <= cycles; i++) {
+            FloatMath.sqrt((float)i);
+        }
+        System.out.println("Native sqrt took " + (System.currentTimeMillis() - milis) + "ms");
     }
 }
