@@ -1,5 +1,8 @@
 package sk.pa3kc.mylibrary;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -12,11 +15,78 @@ import sk.pa3kc.mylibrary.json.JsonParser;
 import sk.pa3kc.mylibrary.util.ArgsParser;
 import sk.pa3kc.mylibrary.util.FloatMath;
 import sk.pa3kc.mylibrary.util.NumberUtils;
+import sk.pa3kc.mylibrary.util.StreamUtils;
 
-public class Universal {
+public class MyLibrary {
+    static boolean initialized = false;
+
+    public static boolean init() {
+        final String tmpPath = DefaultSystemPropertyStrings.JAVA_IO_TMPDIR;
+        final String osName = DefaultSystemPropertyStrings.OS_NAME;
+        final String nativeFileName = "FloatMath";
+
+        final String nativeFileExt;
+        if ("Linux".equals(osName)) {
+            nativeFileExt = ".so";
+        } else if ("Windows".equals(osName)) {
+            final String arch = DefaultSystemPropertyStrings.OS_ARCH;
+
+            if (arch.contains("64")) {
+                nativeFileExt = "64.dll";
+            } else {
+                nativeFileExt = "32.dll";
+            }
+        } else {
+            return false;
+        }
+
+        final String nativeFile = nativeFileName + nativeFileExt;
+        final File tmpFile = new File(tmpPath, nativeFile);
+
+        if (!tmpFile.exists()) {
+            System.out.println("Unpacking native files to " + tmpFile.getAbsolutePath());
+            InputStream is = ClassLoader.getSystemResourceAsStream(nativeFile);
+            FileOutputStream fos = null;
+
+            try {
+                tmpFile.createNewFile();
+
+                fos = new FileOutputStream(tmpFile);
+
+                final byte[] buffer = new byte[2048];
+
+                int checksum = -1;
+                while((checksum = is.read(buffer)) != -1) {
+                    fos.write(buffer, 0, checksum);
+                    fos.flush();
+                }
+            } catch (Throwable ex) {
+                ex.printStackTrace();
+            } finally {
+                StreamUtils.closeStreams(fos, is);
+            }
+        } else {
+            System.out.println("Native files already exists in " + tmpFile.getAbsolutePath());
+        }
+
+        try {
+            Runtime.getRuntime().load(tmpPath + '/' + nativeFile);
+        } catch (Throwable ex) {
+            if (ex instanceof SecurityException) {}
+            if (ex instanceof UnsatisfiedLinkError) {}
+            if (ex instanceof NullPointerException) {}
+
+            return false;
+        }
+
+        return (initialized = true);
+    }
+
     @SuppressWarnings("unchecked")
     public static void main(String[] args) {
         final ArgsParser parser = new ArgsParser(args);
+
+        MyLibrary.init();
 
         for (String arg : parser.getAllArguments()) {
             System.out.println(arg);
@@ -38,7 +108,7 @@ public class Universal {
         System.out.println("This text has RGB #F00");
         CmdUtils.resetColor();
 
-        System.out.println(NumberUtils.round(0.12345, 3));
+        System.out.println(NumberUtils.round(0.12345d, 3));
 
         try {
             final Device[] devices = Device.getUsableDevices();

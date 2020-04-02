@@ -40,7 +40,7 @@ public class CmdUtils {
         //             resource = this.getClass().getClassLoader().getResourceAsStream(libName);
         //             stream = new FileOutputStream(installedLibFile);
 
-        //             final byte[] buffer = new byte[1024];
+        //             final byte[] buffer = new byte[2048];
         //             for (int checksum = resource.read(buffer); checksum != -1; checksum = resource.read(buffer)) {
         //                 stream.write(buffer);
         //                 stream.flush();
