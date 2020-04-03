@@ -1,8 +1,5 @@
 package sk.pa3kc.mylibrary;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -13,73 +10,73 @@ import sk.pa3kc.mylibrary.cmd.CmdUtils;
 import sk.pa3kc.mylibrary.net.Device;
 import sk.pa3kc.mylibrary.json.JsonParser;
 import sk.pa3kc.mylibrary.util.ArgsParser;
-import sk.pa3kc.mylibrary.util.FloatMath;
 import sk.pa3kc.mylibrary.util.NumberUtils;
-import sk.pa3kc.mylibrary.util.StreamUtils;
 
 public class MyLibrary {
-    static boolean initialized = false;
+    static boolean initialized = true;
 
     public static boolean init() {
-        final String tmpPath = DefaultSystemPropertyStrings.JAVA_IO_TMPDIR;
-        final String osName = DefaultSystemPropertyStrings.OS_NAME;
-        final String nativeFileName = "FloatMath";
+        return initialized;
 
-        final String nativeFileExt;
-        if ("Linux".equals(osName)) {
-            nativeFileExt = ".so";
-        } else if ("Windows".equals(osName)) {
-            final String arch = DefaultSystemPropertyStrings.OS_ARCH;
+        // final String tmpPath = DefaultSystemPropertyStrings.JAVA_IO_TMPDIR;
+        // final String osName = DefaultSystemPropertyStrings.OS_NAME;
+        // final String nativeFileName = "FloatMath";
 
-            if (arch.contains("64")) {
-                nativeFileExt = "64.dll";
-            } else {
-                nativeFileExt = "32.dll";
-            }
-        } else {
-            return false;
-        }
+        // final String nativeFileExt;
+        // if ("Linux".equals(osName)) {
+        //     nativeFileExt = ".so";
+        // } else if ("Windows".equals(osName)) {
+        //     final String arch = DefaultSystemPropertyStrings.OS_ARCH;
 
-        final String nativeFile = nativeFileName + nativeFileExt;
-        final File tmpFile = new File(tmpPath, nativeFile);
+        //     if (arch.contains("64")) {
+        //         nativeFileExt = "64.dll";
+        //     } else {
+        //         nativeFileExt = "32.dll";
+        //     }
+        // } else {
+        //     return false;
+        // }
 
-        if (!tmpFile.exists()) {
-            System.out.println("Unpacking native files to " + tmpFile.getAbsolutePath());
-            InputStream is = ClassLoader.getSystemResourceAsStream(nativeFile);
-            FileOutputStream fos = null;
+        // final String nativeFile = nativeFileName + nativeFileExt;
+        // final File tmpFile = new File(tmpPath, nativeFile);
 
-            try {
-                tmpFile.createNewFile();
+        // if (!tmpFile.exists()) {
+        //     System.out.println("Unpacking native files to " + tmpFile.getAbsolutePath());
+        //     InputStream is = ClassLoader.getSystemResourceAsStream(nativeFile);
+        //     FileOutputStream fos = null;
 
-                fos = new FileOutputStream(tmpFile);
+        //     try {
+        //         tmpFile.createNewFile();
 
-                final byte[] buffer = new byte[2048];
+        //         fos = new FileOutputStream(tmpFile);
 
-                int checksum = -1;
-                while((checksum = is.read(buffer)) != -1) {
-                    fos.write(buffer, 0, checksum);
-                    fos.flush();
-                }
-            } catch (Throwable ex) {
-                ex.printStackTrace();
-            } finally {
-                StreamUtils.closeStreams(fos, is);
-            }
-        } else {
-            System.out.println("Native files already exists in " + tmpFile.getAbsolutePath());
-        }
+        //         final byte[] buffer = new byte[2048];
 
-        try {
-            Runtime.getRuntime().load(tmpPath + '/' + nativeFile);
-        } catch (Throwable ex) {
-            if (ex instanceof SecurityException) {}
-            if (ex instanceof UnsatisfiedLinkError) {}
-            if (ex instanceof NullPointerException) {}
+        //         int checksum = -1;
+        //         while((checksum = is.read(buffer)) != -1) {
+        //             fos.write(buffer, 0, checksum);
+        //             fos.flush();
+        //         }
+        //     } catch (Throwable ex) {
+        //         ex.printStackTrace();
+        //     } finally {
+        //         StreamUtils.closeStreams(fos, is);
+        //     }
+        // } else {
+        //     System.out.println("Native files already exists in " + tmpFile.getAbsolutePath());
+        // }
 
-            return false;
-        }
+        // try {
+        //     Runtime.getRuntime().load(tmpPath + '/' + nativeFile);
+        // } catch (Throwable ex) {
+        //     if (ex instanceof SecurityException) {}
+        //     if (ex instanceof UnsatisfiedLinkError) {}
+        //     if (ex instanceof NullPointerException) {}
 
-        return (initialized = true);
+        //     return false;
+        // }
+
+        // return (initialized = true);
     }
 
     @SuppressWarnings("unchecked")
@@ -148,20 +145,5 @@ public class MyLibrary {
         final Boolean useJSP = (Boolean)init_param.get("useJSP");
 
         System.out.println("useJSP = " + useJSP);
-
-        long milis;
-        int cycles = 1000000;
-
-        milis = System.currentTimeMillis();
-        for (int i = 1; i <= cycles; i++) {
-            StrictMath.sqrt((double)i);
-        }
-        System.out.println("Java sqrt took " + (System.currentTimeMillis() - milis) + "ms");
-
-        milis = System.currentTimeMillis();
-        for (int i = 1; i <= cycles; i++) {
-            FloatMath.sqrt((float)i);
-        }
-        System.out.println("Native sqrt took " + (System.currentTimeMillis() - milis) + "ms");
     }
 }

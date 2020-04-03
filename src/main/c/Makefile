@@ -11,7 +11,7 @@ WIN64CC=x86_64-w64-mingw32-gcc
 WIN64_JDK_HOME=/usr/lib/jvm/jdk1.6.0_45_win64
 
 #macos
-MACOS=gcc
+MACOSCC=gcc
 MACOS_JDK_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 
 #global
