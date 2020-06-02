@@ -52,5 +52,6 @@
     <module>cmd</module>
     <module>utils</module>
     <module>net</module>
+    <module>matrix-math</module>
   </modules>
 </project>

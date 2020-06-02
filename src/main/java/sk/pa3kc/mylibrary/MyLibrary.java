@@ -1,4 +1,4 @@
-package sk.pa3kc.mylibrary;
+package sk.pa3kc.mylibrary.core;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
