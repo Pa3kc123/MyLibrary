@@ -9,81 +9,13 @@ import sk.pa3kc.mylibrary.cmd.CmdColor;
 import sk.pa3kc.mylibrary.cmd.CmdUtils;
 import sk.pa3kc.mylibrary.net.Device;
 import sk.pa3kc.mylibrary.json.JsonParser;
-import sk.pa3kc.mylibrary.util.ArgsParser;
-import sk.pa3kc.mylibrary.util.NumberUtils;
+import sk.pa3kc.mylibrary.utils.ArgsParser;
+import sk.pa3kc.mylibrary.utils.NumberUtils;
 
 public class MyLibrary {
-    static boolean initialized = true;
-
-    public static boolean init() {
-        return initialized;
-
-        // final String tmpPath = DefaultSystemPropertyStrings.JAVA_IO_TMPDIR;
-        // final String osName = DefaultSystemPropertyStrings.OS_NAME;
-        // final String nativeFileName = "FloatMath";
-
-        // final String nativeFileExt;
-        // if ("Linux".equals(osName)) {
-        //     nativeFileExt = ".so";
-        // } else if ("Windows".equals(osName)) {
-        //     final String arch = DefaultSystemPropertyStrings.OS_ARCH;
-
-        //     if (arch.contains("64")) {
-        //         nativeFileExt = "64.dll";
-        //     } else {
-        //         nativeFileExt = "32.dll";
-        //     }
-        // } else {
-        //     return false;
-        // }
-
-        // final String nativeFile = nativeFileName + nativeFileExt;
-        // final File tmpFile = new File(tmpPath, nativeFile);
-
-        // if (!tmpFile.exists()) {
-        //     System.out.println("Unpacking native files to " + tmpFile.getAbsolutePath());
-        //     InputStream is = ClassLoader.getSystemResourceAsStream(nativeFile);
-        //     FileOutputStream fos = null;
-
-        //     try {
-        //         tmpFile.createNewFile();
-
-        //         fos = new FileOutputStream(tmpFile);
-
-        //         final byte[] buffer = new byte[2048];
-
-        //         int checksum = -1;
-        //         while((checksum = is.read(buffer)) != -1) {
-        //             fos.write(buffer, 0, checksum);
-        //             fos.flush();
-        //         }
-        //     } catch (Throwable ex) {
-        //         ex.printStackTrace();
-        //     } finally {
-        //         StreamUtils.closeStreams(fos, is);
-        //     }
-        // } else {
-        //     System.out.println("Native files already exists in " + tmpFile.getAbsolutePath());
-        // }
-
-        // try {
-        //     Runtime.getRuntime().load(tmpPath + '/' + nativeFile);
-        // } catch (Throwable ex) {
-        //     if (ex instanceof SecurityException) {}
-        //     if (ex instanceof UnsatisfiedLinkError) {}
-        //     if (ex instanceof NullPointerException) {}
-
-        //     return false;
-        // }
-
-        // return (initialized = true);
-    }
-
     @SuppressWarnings("unchecked")
     public static void main(String[] args) {
         final ArgsParser parser = new ArgsParser(args);
-
-        MyLibrary.init();
 
         for (String arg : parser.getAllArguments()) {
             System.out.println(arg);
