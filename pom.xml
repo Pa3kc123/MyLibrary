@@ -53,5 +53,6 @@
     <module>utils</module>
     <module>net</module>
     <module>matrix-math</module>
+    <module>obj-loader</module>
   </modules>
 </project>
