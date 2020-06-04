@@ -12,7 +12,24 @@ public class Vector2f {
         this.y = y;
     }
 
+    public static Vector2f fromStrings(String x, String y) {
+        return new Vector2f(
+            Float.parseFloat(x),
+            Float.parseFloat(y)
+        );
+    }
     public static Vector2f negate(Vector2f vec) {
         return new Vector2f(-vec.x, -vec.y);
+    }
+
+    public Vector2f negate() {
+        this.x = -this.x;
+        this.y = -this.y;
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return "[ " + this.x + " | " + this.y + " ]";
     }
 }

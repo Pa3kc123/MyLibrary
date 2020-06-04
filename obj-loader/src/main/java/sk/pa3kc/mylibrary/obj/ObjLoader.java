@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import sk.pa3kc.mylibrary.matrix.pojo.Vector2f;
@@ -16,7 +17,8 @@ public abstract class ObjLoader {
         COMMENT("#"),
         VERTEX("v"),
         VERTEX_TEXTURE("vt"),
-        VERTEX_NORMAL("vn");
+        VERTEX_NORMAL("vn"),
+        FACE("f");
 
         private final String command;
         private Command(String command) {
@@ -63,25 +65,41 @@ public abstract class ObjLoader {
             for (; line != null; line = br.readLine()) {
                 if (line.startsWith("#") || line.length() == 0) continue;
 
-                final String[] splits = line.split(" ");
+                final String[] splits = split(line);
 
                 Command command = SUPPORTED_COMMANDS.get(splits[0]);
 
                 switch (command) {
                     case COMMENT: break;
                     case VERTEX:
-                        splits = fixSplits(splits, 4);
-
                         verticies.add(
-                            new Vector3f(
-                                Float.parseFloat(splits[1]),
-                                Float.parseFloat(splits[2]),
-                                Float.parseFloat(splits[3])
+                            Vector3f.fromStrings(
+                                splits[1],
+                                splits[2],
+                                splits[3]
                             )
                         );
                     break;
-                    case VERTEX_TEXTURE: break;
-                    case VERTEX_NORMAL: break;
+                    case VERTEX_TEXTURE:
+                        textures.add(
+                            Vector2f.fromStrings(
+                                splits[1],
+                                splits[2]
+                            )
+                        );
+                    break;
+                    case VERTEX_NORMAL:
+                        normals.add(
+                            Vector3f.fromStrings(
+                                splits[1],
+                                splits[2],
+                                splits[3]
+                            )
+                        );
+                    break;
+                    case FACE:
+
+                    break;
                 }
 
                 switch (splits[0]) {
@@ -170,17 +188,17 @@ public abstract class ObjLoader {
         return loader.loadModelToVAO(verticiesArr, texturesArr, normalsArr, indiciesArr);
     }
 
-    private static String[] fixSplits(String[] splits, int resultLength) {
-        final String[] tmp = new String[resultLength];
+    private static String[] split(String line) {
+        final String[] splits = line.split("");
 
-        if (splits.length != resultLength) {
-            for (int i = 0, j = 0; i < splits.length && j < resultLength; i++) {
-                if ("".equals(splits[i])) {
-                    tmp[j++] = splits[i];
-                }
+        final List<String> tmp = new ArrayList<String>();
+
+        for (final String split : splits) {
+            if (!"".equals(split)) {
+                tmp.add(split);
             }
         }
 
-        return tmp;
+        return tmp.toArray(new String[0]);
     }
 }

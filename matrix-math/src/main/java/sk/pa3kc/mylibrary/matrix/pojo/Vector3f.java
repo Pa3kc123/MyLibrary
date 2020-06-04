@@ -14,8 +14,22 @@ public class Vector3f {
         this.z = z;
     }
 
+    public static Vector3f fromStrings(String x, String y, String z) {
+        return new Vector3f(
+            Float.parseFloat(x),
+            Float.parseFloat(y),
+            Float.parseFloat(z)
+        );
+    }
     public static Vector3f negate(Vector3f vec) {
         return new Vector3f(-vec.x, -vec.y, -vec.z);
+    }
+
+    public Vector3f negate() {
+        this.x = -this.x;
+        this.y = -this.y;
+        this.z = -this.z;
+        return this;
     }
 
     @Override

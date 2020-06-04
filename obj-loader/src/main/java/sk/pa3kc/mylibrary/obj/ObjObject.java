@@ -1,5 +1,6 @@
 package sk.pa3kc.mylibrary.obj;
 
+import sk.pa3kc.mylibrary.matrix.pojo.Face3f;
 import sk.pa3kc.mylibrary.matrix.pojo.Vector2f;
 import sk.pa3kc.mylibrary.matrix.pojo.Vector3f;
 
@@ -7,6 +8,7 @@ public class ObjObject {
     private Vector3f[] verticies;
     private Vector2f[] vertexTextures;
     private Vector3f[] vertexNormals;
+    private Face3f[] faces;
     private int[] indicies;
 
     public ObjObject() {}
