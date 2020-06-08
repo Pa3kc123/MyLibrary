@@ -2,8 +2,6 @@ package sk.pa3kc.mylibrary.utils;
 
 import java.lang.reflect.Array;
 
-import sk.pa3kc.mylibrary.utils.ObjectPointer;
-
 public class ArrayUtils {
     private ArrayUtils() {}
 

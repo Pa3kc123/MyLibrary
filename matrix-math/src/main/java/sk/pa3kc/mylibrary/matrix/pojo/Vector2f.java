@@ -21,6 +21,17 @@ public class Vector2f {
     public static Vector2f negate(Vector2f vec) {
         return new Vector2f(-vec.x, -vec.y);
     }
+    public static float[] flattenVectors(Vector2f... vecs) {
+        final float[] result = new float[vecs.length * 2];
+
+        int i = 0;
+        for (Vector2f vec : vecs) {
+            result[i++] = vec.x;
+            result[i++] = vec.y;
+        }
+
+        return result;
+    }
 
     public Vector2f negate() {
         this.x = -this.x;

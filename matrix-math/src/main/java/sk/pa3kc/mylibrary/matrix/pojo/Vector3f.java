@@ -24,6 +24,18 @@ public class Vector3f {
     public static Vector3f negate(Vector3f vec) {
         return new Vector3f(-vec.x, -vec.y, -vec.z);
     }
+    public static float[] flattenVectors(Vector3f... vecs) {
+        final float[] result = new float[vecs.length * 3];
+
+        int i = 0;
+        for (Vector3f vec : vecs) {
+            result[i++] = vec.x;
+            result[i++] = vec.y;
+            result[i++] = vec.z;
+        }
+
+        return result;
+    }
 
     public Vector3f negate() {
         this.x = -this.x;

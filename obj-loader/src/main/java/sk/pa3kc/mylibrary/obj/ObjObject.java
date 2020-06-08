@@ -1,53 +1,38 @@
 package sk.pa3kc.mylibrary.obj;
 
-import sk.pa3kc.mylibrary.matrix.pojo.Face3f;
-import sk.pa3kc.mylibrary.matrix.pojo.Vector2f;
-import sk.pa3kc.mylibrary.matrix.pojo.Vector3f;
+import sk.pa3kc.mylibrary.matrix.pojo.Face;
 
 public class ObjObject {
-    private Vector3f[] verticies;
-    private Vector2f[] vertexTextures;
-    private Vector3f[] vertexNormals;
-    private Face3f[] faces;
-    private int[] indicies;
+    private Face[] faces;
+    private float[] verticies;
+    private float[] vertexTextures;
+    private float[] vertexNormals;
 
     public ObjObject() {}
-    public ObjObject(
-        Vector3f[] verticies,
-        Vector2f[] vertexTextures,
-        Vector3f[] vertexNormals,
-        int[] indicies
-    ) {
-        this.verticies = verticies;
-        this.vertexTextures = vertexTextures;
-        this.vertexNormals = vertexNormals;
-        this.indicies = indicies;
-        this.verticies = verticies;
-    }
 
-    public Vector3f[] getVerticies() {
+    public Face[] getFaces() {
+        return this.faces;
+    }
+    public float[] getVerticies() {
         return this.verticies;
     }
-    public Vector2f[] getVertexTextures() {
+    public float[] getVertexTextures() {
         return this.vertexTextures;
     }
-    public Vector3f[] getVertexNormals() {
+    public float[] getVertexNormals() {
         return this.vertexNormals;
     }
-    public int[] getIndicies() {
-        return this.indicies;
-    }
 
-    public void setVerticies(Vector3f[] verticies) {
+    public void setFaces(Face[] faces) {
+        this.faces = faces;
+    }
+    public void setVerticies(float[] verticies) {
         this.verticies = verticies;
     }
-    public void setVertexTextures(Vector2f[] vertexTextures) {
+    public void setVertexTextures(float[] vertexTextures) {
         this.vertexTextures = vertexTextures;
     }
-    public void setVertexNormals(Vector3f[] vertexNormals) {
+    public void setVertexNormals(float[] vertexNormals) {
         this.vertexNormals = vertexNormals;
-    }
-    public void setIndicies(int[] indicies) {
-        this.indicies = indicies;
     }
 }
