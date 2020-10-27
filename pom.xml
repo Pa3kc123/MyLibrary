@@ -54,5 +54,6 @@
     <module>net</module>
     <module>matrix-math</module>
     <module>obj-loader</module>
+    <module>config-gen-kt</module>
   </modules>
 </project>
