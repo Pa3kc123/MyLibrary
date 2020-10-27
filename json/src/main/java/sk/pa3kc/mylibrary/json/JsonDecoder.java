@@ -73,6 +73,9 @@ class StringStream implements Iterator<Character> {
         return null;
     }
 
+    @Override
+    public void remove() { throw new UnsupportedOperationException("remove"); }
+
     public int findNext(char ch) {
         while (this.hasNext()) {
             if (this.arr[this.index++] == ch) return this.index - 1;
@@ -224,7 +227,6 @@ abstract class JsonDecoder {
         return list;
     }
 
-
     private static String object(StringStream stream) {
         int index = stream.index();
         int bracketCount = 1;
@@ -350,7 +352,7 @@ abstract class JsonDecoder {
     private static Object parseRealNumber(String numAsString) {
         try {
             return Integer.parseInt(numAsString);
-        } catch (NumberFormatException ex) {}
+        } catch (NumberFormatException ignored) {}
 
         try {
             return Long.parseLong(numAsString);
