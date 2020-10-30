@@ -12,6 +12,8 @@ import javax.annotation.processing.SupportedSourceVersion
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.Element
 import javax.lang.model.element.TypeElement
+import javax.lang.model.element.VariableElement
+import javax.tools.Diagnostic
 
 const val KAPT_KOTLIN_GENERATED_OPTION_NAME = "kapt.kotlin.generated"
 
@@ -30,35 +32,33 @@ class Processor : AbstractProcessor() {
         try {
             processImpl(annotations, roundEnv)
         } catch (e: Exception) {
-            fatalError(e)
-        }
-
-        roundEnv.getElementsAnnotatedWith(Configuration::class.java).forEach {
-            val pack = super.processingEnv.elementUtils.getPackageOf(it).toString()
-            processClass(it, pack)
+            fatalError(e.stackTraceToString())
         }
 
         return true
     }
 
-    private fun processImpl(annotations: Set<TypeElement>, roundEnv: RoundEnvironment): Boolean {
-        if (roundEnv.processingOver())
+    private fun processImpl(annotations: Set<TypeElement>, roundEnv: RoundEnvironment) {
+        roundEnv.getElementsAnnotatedWith(Configuration::class.java).forEach {
+            val pack = super.processingEnv.elementUtils.getPackageOf(it).toString()
+            processClass(it as TypeElement, pack)
+        }
     }
 
-    private fun processClass(element: Element, pack: String) {
+    private fun processClass(element: TypeElement, pack: String) {
+        val variables = element.enclosedElements.filterIsInstance<VariableElement>()
+
         File(this.kaptGeneratedDir, "${pack.replace('.', '/')}/${element.simpleName}.kt").run {
             if (!exists()) {
                 parentFile.mkdirs()
                 createNewFile()
             }
 
-            super.processingEnv.
-
             outputStream().use {
                 with(it) {
                     writeTextLine("package $pack.${element.simpleName}")
                     writeTextLine()
-                    writeTextLine("data class ${element.simpleName} {")
+                    writeTextLine("class ${element.simpleName} {")
                     writeTextLine()
                     writeTextLine("}")
                     writeTextLine()
@@ -66,6 +66,8 @@ class Processor : AbstractProcessor() {
             }
         }
     }
+
+    private fun fatalError(msg: String) = super.processingEnv.messager.printMessage(Diagnostic.Kind.ERROR, msg)
 }
 
 private fun FileOutputStream.writeTextLine(text: String = "", charset: Charset = Charsets.UTF_8) = this.write("$text${System.lineSeparator()}".toByteArray(charset))
