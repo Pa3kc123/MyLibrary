@@ -1,256 +1,287 @@
 package sk.pa3kc.mylibrary.json;
 
-import java.io.IOException;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 abstract class JsonDecoder {
-    private static final String JSON_NULL = "null";
-    private static final String JSON_TRUE = "true";
-    private static final String JSON_FALSE = "false";
-
-    private static final RuntimeException INVALID_JSON_EX = new RuntimeException("Invalid json");
+    private static final char[] JSON_NULL = { 'n', 'u', 'l', 'l' };
+    private static final char[] JSON_TRUE = { 't', 'r', 'u', 'e' };
+    private static final char[] JSON_FALSE = { 'f', 'a', 'l', 's', 'e' };
 
     private JsonDecoder() {}
 
-    static Map<String, Object> decodeJsonObject(String jsonString, HashMap<String, Object> output) throws IOException {
-        final JsonTokenizer tokenizer = new JsonTokenizer(jsonString);
-
-        if (tokenizer.nextChar() != '{') {
-            throw INVALID_JSON_EX;
+    @NotNull
+    static Map<String, Object> decodeJsonObject(
+        @NotNull final JsonTokenizer tokenizer,
+        @NotNull HashMap<String, Object> output
+    ) throws JsonException {
+        if (tokenizer.getCurrChar() == 0) {
+            tokenizer.nextChar();
         }
 
-        char c;
+        if (tokenizer.getCurrChar() != '{') {
+            throw new JsonException("Invalid token at " + tokenizer.getLineIndex() + "x" + tokenizer.getCharIndex());
+        }
+
+        boolean useLast = false;
         while (!tokenizer.isEofReached()) {
-            if (tokenizer.nextChar() != '"') throw INVALID_JSON_EX;
-            final String key = tokenizer.string();
+            final String key = string(tokenizer);
 
-            if (tokenizer.nextChar() != ':') throw INVALID_JSON_EX;
+            if (tokenizer.nextClearChar() != ':') {
+                throw new JsonException("Missing ':' at " + tokenizer.getLineIndex() + "x" + tokenizer.getCharIndex());
+            }
 
-            c = tokenizer.nextChar();
-            switch (c) {
-                case '"': output.put(key, tokenizer.string()); break;
+            switch (tokenizer.nextClearChar()) {
+                case '"':
+                    output.put(key, string(tokenizer));
+                break;
 
                 case 't':
                 case 'f':
                 case 'n':
-                    final int length = c == 'f' ? 5 : 4;
-                    final String value = new String(tokenizer.nextCharRange(length));
+                    final int length = tokenizer.getCurrChar() == 'f' ? 5 : 4;
+                    final char[] value = new char[length];
+                    value[0] = tokenizer.getCurrChar();
 
-                    if (JSON_TRUE.equals(value)) {
+                    for (int i = 1; i < length; i++) {
+                        value[i] = tokenizer.nextChar();
+                    }
+
+                    if (Arrays.equals(value, JSON_TRUE)) {
                         output.put(key, true);
-                    } else if (JSON_FALSE.equals(value)) {
+                    } else if (Arrays.equals(value, JSON_FALSE)) {
                         output.put(key, false);
-                    } else if (JSON_NULL.equals(value)) {
+                    } else if (Arrays.equals(value, JSON_NULL)) {
                         output.put(key, null);
                     } else {
-                        throw INVALID_JSON_EX;
+                        throw new JsonException("Invalid value at " + tokenizer.getLineIndex() + "x" + tokenizer.getCharIndex());
                     }
                 break;
 
                 case '{':
-                    output.put(key, decodeJsonObject(tokenizer.object(), new HashMap<String, Object>()));
+                    output.put(key, decodeJsonObject(tokenizer, new HashMap<String, Object>()));
                 break;
 
                 case '[':
-                    output.put(key, decodeJsonArray(tokenizer.array(), new ArrayList<Object>()));
+                    output.put(key, decodeJsonArray(tokenizer, new ArrayList<Object>()));
+                break;
+
+                case '-':
+                    output.put(key, number(tokenizer, true));
+                    useLast = true;
                 break;
 
                 default:
-                    if (c == '-' || (c >= '0' && c <= '9')) {
-                        output.put(key, tokenizer.number());
+                    if (tokenizer.getCurrChar() >= '0' && tokenizer.getCurrChar() <= '9') {
+                        output.put(key, number(tokenizer, false));
+                        useLast = true;
                     } else {
-                        throw INVALID_JSON_EX;
+                        throw new JsonException("Invalid value at " + tokenizer.getLineIndex() + "x" + tokenizer.getCharIndex());
                     }
                 break;
             }
 
-            c = tokenizer.nextChar();
-            if (c != ',' && c != '}') {
-                throw INVALID_JSON_EX;
+            if (",}".indexOf(useLast ? tokenizer.getCurrChar() : tokenizer.nextClearChar()) == -1) {
+                throw new JsonException("Invalid token at " + tokenizer.getLineIndex() + "x" + tokenizer.getCharIndex());
             }
+
+            if ((useLast ? tokenizer.nextClearChar() : tokenizer.getCurrChar()) == '}') {
+                break;
+            }
+
+            useLast = false;
+        }
+
+        return output;
+    }
+    static List<Object> decodeJsonArray(
+        @NotNull final JsonTokenizer tokenizer,
+        @NotNull ArrayList<Object> output
+    ) throws JsonException {
+        if (tokenizer.getCurrChar() == 0) {
+            tokenizer.nextChar();
+        }
+
+        if (tokenizer.getCurrChar() != '[') {
+            throw new JsonException("Invalid token at " + tokenizer.getLineIndex() + "x" + tokenizer.getCharIndex());
+        }
+
+        boolean useLast = false;
+        while (!tokenizer.isEofReached()) {
+            switch (tokenizer.nextClearChar()) {
+                case '"':
+                    output.add(string(tokenizer));
+                break;
+
+                case 't':
+                case 'f':
+                case 'n':
+                    final int length = tokenizer.getCurrChar() == 'f' ? 5 : 4;
+                    final char[] value = new char[length];
+                    value[0] = tokenizer.getCurrChar();
+
+                    for (int i = 1; i < length; i++) {
+                        value[i] = tokenizer.nextChar();
+                    }
+
+                    if (Arrays.equals(value, JSON_TRUE)) {
+                        output.add(true);
+                    } else if (Arrays.equals(value, JSON_FALSE)) {
+                        output.add(false);
+                    } else if (Arrays.equals(value, JSON_NULL)) {
+                        output.add(null);
+                    } else {
+                        throw new JsonException("Invalid value at " + tokenizer.getLineIndex() + "x" + tokenizer.getCharIndex());
+                    }
+                break;
+
+                case '{':
+                    output.add(decodeJsonObject(tokenizer, new HashMap<String, Object>()));
+                break;
+
+                case '[':
+                    output.add(decodeJsonArray(tokenizer, new ArrayList<Object>()));
+                break;
+
+                case '-':
+                    output.add(number(tokenizer, true));
+                    useLast = true;
+                break;
+
+                default:
+                    if (tokenizer.getCurrChar() >= '0' && tokenizer.getCurrChar() <= '9') {
+                        output.add(number(tokenizer, false));
+                        useLast = true;
+                    } else {
+                        throw new JsonException("Invalid value at " + tokenizer.getLineIndex() + "x" + tokenizer.getCharIndex());
+                    }
+                break;
+            }
+
+            if (",}".indexOf(useLast ? tokenizer.getCurrChar() : tokenizer.nextClearChar()) == -1) {
+                throw new JsonException("Invalid token at " + tokenizer.getLineIndex() + "x" + tokenizer.getCharIndex());
+            }
+
+            if ((useLast ? tokenizer.nextClearChar() : tokenizer.getCurrChar()) == '}') {
+                break;
+            }
+
+            useLast = false;
         }
 
         return output;
     }
 
-    static ArrayList<Object> decodeJsonArray(String jsonString, ArrayList<Object> list) {
-        final JsonTokenizer stream = new JsonTokenizer(jsonString);
-
-        if (stream.nextChar() != '[') throw INVALID_JSON_EX;
-
-        while (!stream.isEofReached()) {
-            valueLoop:
-            while (!stream.isEofReached()) {
-                final char ch = stream.nextChar();
-
-                switch (ch) {
-                    case '"': list.add(stream.string()); break valueLoop;
-
-                    case 't':
-                    case 'f':
-                    case 'n': {
-                        final String value = new String(stream.nextCharRange(ch == 'f' ? 5 : 4));
-
-                        if (JSON_TRUE.equals(value)) {
-                            list.add(true);
-                        } else if (JSON_FALSE.equals(value)) {
-                            list.add(false);
-                        } else if (JSON_NULL.equals(value)) {
-                            list.add(null);
-                        } else {
-                            throw INVALID_JSON_EX;
-                        }
-                    }
-                    break valueLoop;
-
-                    case '{':
-                        list.add(decodeJsonObject(object(stream), new HashMap<String, Object>()));
-                    break valueLoop;
-
-                    case '[':
-                        list.add(decodeJsonArray(array(stream), new ArrayList<Object>()));
-                    break valueLoop;
-
-                    default:
-                        if (ch == '-' || (ch >= '0' && ch <= '9')) {
-                            list.add(number(stream));
-                        } else {
-                            throw INVALID_JSON_EX;
-                        }
-                    break valueLoop;
-                }
-            }
-
-            final int ch = stream.nextChar();
-            if (ch != ',' && ch != ']') {
-                throw INVALID_JSON_EX;
-            }
-        }
-
-        return list;
-    }
-
-    private static String object(JsonTokenizer stream) {
-        int index = stream.getIndex();
-        int bracketCount = 1;
-        boolean isWithinString = false;
-
-        while (!stream.isEofReached()) {
-            final char ch = stream.nextChar();
-
-            if (ch == '"') {
-                isWithinString = !isWithinString;
-                continue;
-            }
-
-            if (!isWithinString) {
-                if (ch == '{') bracketCount++;
-                if (ch == '}') bracketCount--;
-
-                if (bracketCount == 0) {
-                    return new String(stream.nextCharRange(stream.getIndex() - index + 1));
-                }
-            }
-        }
-
-        throw INVALID_JSON_EX;
-    }
-    private static String array(JsonTokenizer stream) {
-        int index = stream.getIndex();
-        int bracketCount = 1;
-        boolean isWithinString = false;
-
-        while (stream.hasNext()) {
-            final char ch = stream.next();
-
-            if (ch == '"') isWithinString = !isWithinString;
-
-            if (!isWithinString) {
-                if (ch == '[') bracketCount++;
-                if (ch == ']') bracketCount--;
-
-                if (bracketCount == 0) {
-                    return new String(stream.getRange(index, stream.getIndex() - index + 1));
-                }
-            }
-
-        }
-
-        throw INVALID_JSON_EX;
-    }
-    private static String string(JsonTokenizer stream) throws IOException {
-        final int index = stream.getIndex() + 1;
-
-        while (stream.isEofReached()) {
-            if (stream.nextChar() == '"' && stream.get(stream.getIndex() - 1) != '\\') {
-                return new String(stream.nextCharRange(stream.getIndex() - index));
-            }
-        }
-
-        throw INVALID_JSON_EX;
-    }
-    private static Object number(JsonTokenizer stream) {
+    private static String string(JsonTokenizer tokenizer) throws JsonException {
         final StringBuilder builder = new StringBuilder();
-
-        char ch = stream.get(stream.getIndex());
-        if (ch == '-') {
-            builder.append(ch);
-            ch = stream.next();
+        if (tokenizer.nextClearChar() != '"') {
+            throw new JsonException("Missing '\"' at " + tokenizer.getLineIndex() + "x" + tokenizer.getCharIndex());
         }
 
-        if (ch < '0' && ch > '9') throw INVALID_JSON_EX;
+        char c;
+        while (true) {
+            switch (c = tokenizer.nextChar()) {
+                case 0:
+                case '\r':
+                case '\n':
+                    throw new JsonException("Unterminated string");
 
-        while (stream.hasNext()) {
-            builder.append(ch);
+                case '\\':
+                    switch (c = tokenizer.nextChar()) {
+                        case 'b': builder.append('\b'); break;
+                        case 'f': builder.append('\f'); break;
+                        case 'n': builder.append('\n'); break;
+                        case 'r': builder.append('\r'); break;
+                        case 't': builder.append('\t'); break;
 
-            ch = stream.get(stream.getIndex() + 1);
-            if (ch >= '0' && ch <= '9') {
-                stream.next();
-            } else break;
+                        case 'u':
+                            try {
+                                builder.append((char)Integer.parseInt(new String(tokenizer.nextCharRange(4)), 16));
+                            } catch (NumberFormatException e) {
+                                throw new JsonException("Illegal escape. ", e);
+                            }
+                        break;
+
+                        case '"':
+                        case '\\':
+                        case '/':
+                            builder.append(c);
+                        break;
+
+                        default:
+                            throw new JsonException("Illegal escape.");
+                    }
+                break;
+
+                case '"':
+                    final String result = builder.toString();
+                    System.out.println(result);
+                return result;
+
+                default:
+                    builder.append(c);
+                break;
+            }
+        }
+    }
+    private static Object number(JsonTokenizer stream, boolean isNegative) throws JsonException {
+        final StringBuilder builder = new StringBuilder();
+        char c = stream.getCurrChar();
+
+        if (isNegative) {
+            builder.append('-');
+            c = stream.nextChar();
         }
 
-        if (ch != '.' && ch != 'e' && ch != 'E') {
+        while (c >= '0' && c <= '9') {
+            builder.append(c);
+            c = stream.nextChar();
+        }
+
+        if (".eE".indexOf(c) == -1) {
             return parseNumber(builder.toString(), false);
         }
 
-        final boolean isDecimal = ch == '.';
+        final boolean isDecimal = c == '.';
 
         if (isDecimal) {
-            builder.append(ch);
+            builder.append(c);
+            c = stream.nextChar();
 
-            while (stream.hasNext()) {
-                builder.append(ch);
-
-                ch = stream.get(stream.getIndex() + 1);
-                if (ch >= '0' && ch <= '9') {
-                    stream.next();
-                } else break;
+            while (c >= '0' && c <= '9') {
+                builder.append(c);
+                c = stream.nextChar();
             }
         }
 
-        if (ch == 'e' || ch == 'E') {
-            builder.append(ch);
+        if (c == 'e' || c == 'E') {
+            builder.append(c);
+            c = stream.nextChar();
 
-            ch = stream.next();
-            if (ch == '+' || ch == '-') {
-                builder.append(ch);
-                ch = stream.next();
+            if (c == '+' || c == '-') {
+                if (c == '-') {
+                    builder.append(c);
+                }
+                c = stream.nextChar();
+            } else {
+                throw new JsonException("Invalid value at " + stream.getLineIndex() + "x" + stream.getCharIndex());
             }
 
-            while (stream.hasNext()) {
-                builder.append(ch);
-
-                ch = stream.get(stream.getIndex() + 1);
-                if (ch >= '0' && ch <= '9') {
-                    stream.next();
-                } else break;
+            while (c >= '0' && c <= '9') {
+                builder.append(c);
+                c = stream.nextChar();
             }
         }
 
         return parseNumber(builder.toString(), isDecimal);
     }
+
     private static Object parseNumber(String numAsString, boolean isDecimal) {
         return isDecimal ? parseFloatingNumber(numAsString) : parseRealNumber(numAsString);
     }

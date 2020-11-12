@@ -1,5 +1,7 @@
 package sk.pa3kc.mylibrary.json;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,30 +18,27 @@ public abstract class JsonParser {
         return JsonEncoder.encodeJsonArray(list, new StringBuilder()).toString();
     }
 
-    public static HashMap<String, Object> decodeJsonObject(String jsonString) {
-        if (jsonString == null || (jsonString = jsonString.trim()).length() == 0) {
-            throw new RuntimeException("Invalid json");
-        }
-
-        checkBrackets(jsonString);
-
-        return JsonDecoder.decodeJsonObject(jsonString, new HashMap<String, Object>());
+    public static Map<String, Object> decodeJsonObject(String jsonString) throws JsonException {
+        jsonString = jsonString.trim();
+        validateJson(jsonString);
+        return JsonDecoder.decodeJsonObject(new JsonTokenizer(jsonString), new HashMap<String, Object>());
     }
 
-    public static ArrayList<Object> decodeJsonArray(String jsonString) {
-        if (jsonString == null || (jsonString = jsonString.trim()).length() == 0) {
-            throw new RuntimeException("Invalid json");
-        }
-
-        checkBrackets(jsonString);
-
-        return JsonDecoder.decodeJsonArray(jsonString, new ArrayList<Object>());
+    public static List<Object> decodeJsonArray(String jsonString) {
+        jsonString = jsonString.trim();
+        validateJson(jsonString);
+        return JsonDecoder.decodeJsonArray(new JsonTokenizer(jsonString), new ArrayList<Object>());
     }
 
-    private static void checkBrackets(String jsonString) {
+    private static void validateJson(@NotNull String jsonString) throws JsonException {
+        if (jsonString.length() == 0) {
+            throw new JsonException("Invalid json");
+        }
+
         int curlyBrackets = 0;
         int squareBrackets = 0;
         boolean isWithinString = false;
+
         for (int i = 0; i < jsonString.length(); i++) {
             final char character = jsonString.charAt(i);
 
@@ -62,10 +61,16 @@ public abstract class JsonParser {
                     case ']': squareBrackets--; break;
                 }
             }
+
+            if (curlyBrackets == 0 && squareBrackets == 0) {
+                if (++i != jsonString.length() && jsonString.charAt(i) > ' ') {
+                    throw new JsonException("Invalid json");
+                }
+            }
         }
 
         if (curlyBrackets != 0 || squareBrackets != 0 || isWithinString) {
-            throw new RuntimeException("Invalid json");
+            throw new JsonException("Invalid json");
         }
     }
 }
