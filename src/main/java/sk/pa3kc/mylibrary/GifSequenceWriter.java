@@ -1,13 +1,15 @@
-package sk.pa3kc.miniprojects;
+package sk.pa3kc.mylibrary;
+
 import javax.imageio.*;
 import javax.imageio.metadata.IIOInvalidTreeException;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.metadata.IIOMetadataNode;
 import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.RenderedImage;
+import java.io.Closeable;
 import java.io.IOException;
 
-public class GifSequenceWriter implements AutoCloseable {
+public class GifSequenceWriter implements Closeable {
     public enum DisposalMethod {
         RESTORE_TO_BACKGROUND("restoreToBackgroundColor"),
         RESTORE_TO_PREVIOUS("restoreToPrevious"),

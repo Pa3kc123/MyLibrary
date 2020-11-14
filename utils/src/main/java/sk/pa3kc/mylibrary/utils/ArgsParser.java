@@ -1,71 +1,106 @@
 package sk.pa3kc.mylibrary.utils;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ArgsParser {
     private static final Pattern PATTERN = Pattern.compile("--(.*?)=(.*)");
 
-    private String[] args;
-    private HashMap<String, String> options = new HashMap<String, String>();
+    String[] args = new String[0];
+    final HashMap<String, String> options = new HashMap<String, String>();
 
-    public ArgsParser(String... args) {
+    public ArgsParser() {
+        this(null);
+    }
+    public ArgsParser(@Nullable String[] args) {
+        if (args != null) {
+            parse(args);
+        }
+    }
+
+    @NotNull
+    public String[] getAllArgs() {
+        return this.args;
+    }
+    @NotNull
+    public Map<String, String> getAllOptions() {
+        return this.options;
+    }
+    @NotNull
+    public String getArg(final int index) {
+        return this.args[index];
+    }
+    @Nullable
+    public String getOption(final String key) {
+        return this.options.get(key);
+    }
+    @NotNull
+    public String getOption(final String key, final String def) {
+        final String result = this.options.get(key);
+        return result != null ? result : def;
+    }
+
+    @NotNull
+    public ArgsParser parse(@NotNull final String... args) {
+        if (args.length == 0) {
+            if (this.args == null) {
+                this.args = new String[0];
+            }
+
+            return this;
+        }
+
+        this.options.clear();
+
         final ArrayList<String> argsList = new ArrayList<String>();
 
-        boolean doneWithOptions = false;
-
-        for (final String arg : args) {
-            if (doneWithOptions) {
-                argsList.add(arg);
-                continue;
-            }
+        int index = 0;
+        for (; index < args.length; index++) {
+            final String arg = args[index];
 
             if ("--".equals(arg)) {
-                doneWithOptions = true;
-                continue;
+                break;
             }
 
-            if ("--".equals(arg.substring(0, 2))) {
-                final Matcher matcher = PATTERN.matcher(arg);
+            if (arg.startsWith("--")) {
+                if (arg.contains("=")) {
+                    final Matcher matcher = PATTERN.matcher(arg);
 
-                if (matcher.find() && matcher.groupCount() == 2) {
-                    final String key = matcher.group(1);
+                    if (matcher.find()) {
+                        final String key = matcher.group(1);
+                        final String value = matcher.group(2);
 
-                    if (key == null) {
-                        this.options.put(arg.substring(2), "true");
-                    } else {
-                        this.options.put(key, matcher.group(2));
+                        if (!"".equals(key) && !"".equals(value)) {
+                            this.options.put(key, value);
+                        }
                     }
+                } else {
+                    final String value = arg.substring(2);
+                    this.options.put(value, "true");
                 }
 
                 continue;
             }
 
-            if ("-".equals(arg.substring(0, 1)) && !"-".equals(arg)) {
-                for (int i = 1; i < arg.length(); i++) {
-                    this.options.put(arg.substring(i, i), "true");
-                }
+            if (arg.startsWith("-") && !"-".equals(arg)) {
+                this.options.put(arg.substring(1), "true");
                 continue;
             }
 
             argsList.add(arg);
         }
 
-        this.args = argsList.toArray(new String[0]);
-    }
+        for (; index < args.length; index++) {
+            argsList.add(args[index]);
+        }
 
-    public String getArgument(int index) {
-        return this.args[index];
-    }
-    public String[] getAllArguments() {
-        return this.args;
-    }
-    public String getOption(String name) {
-        return this.options.get(name);
-    }
-    public HashMap<String, String> getAllOptions() {
-        return this.options;
+        this.args = argsList.toArray(new String[0]);
+        return this;
     }
 }

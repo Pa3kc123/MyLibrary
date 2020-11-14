@@ -1,4 +1,4 @@
-package sk.pa3kc.miniprojects;
+package sk.pa3kc.mylibrary;
 
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
@@ -40,13 +40,13 @@ public class App {
         if (!output.exists()) output.createNewFile();
 
         // #BEAIFUL
-        if (rowCount <= 0)           new IllegalArgumentException("row-count cannot be less or equal to 0");
-        if (colCount <= 0)           new IllegalArgumentException("col-count cannot be less or equal to 0");
-        if (width <= 0)              new IllegalArgumentException("width cannot be less or equal to 0");
-        if (height <= 0)             new IllegalArgumentException("height cannot be less or equal to 0");
-        if (rowOffset >= rowCount)   new IllegalArgumentException("row-offset cannot be more or equal to row-count");
-        if (colOffset >= colCount)   new IllegalArgumentException("col-offset cannot be more or equal to col-count");
-        if (!sheet.exists())         new IllegalArgumentException("Sheet file not found");
+        if (rowCount <= 0)           throw new IllegalArgumentException("row-count cannot be less or equal to 0");
+        if (colCount <= 0)           throw new IllegalArgumentException("col-count cannot be less or equal to 0");
+        if (width <= 0)              throw new IllegalArgumentException("width cannot be less or equal to 0");
+        if (height <= 0)             throw new IllegalArgumentException("height cannot be less or equal to 0");
+        if (rowOffset >= rowCount)   throw new IllegalArgumentException("row-offset cannot be more or equal to row-count");
+        if (colOffset >= colCount)   throw new IllegalArgumentException("col-offset cannot be more or equal to col-count");
+        if (!sheet.exists())         throw new IllegalArgumentException("Sheet file not found");
 
         final BufferedImage sheetImg = ImageIO.read(sheet);
         final BufferedImage[] images = new BufferedImage[(rowCount - rowOffset) * (colCount - colOffset)];

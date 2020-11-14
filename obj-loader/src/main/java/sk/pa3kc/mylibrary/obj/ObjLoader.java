@@ -14,7 +14,7 @@ import java.util.Map;
 import sk.pa3kc.mylibrary.matrix.pojo.Face;
 
 public abstract class ObjLoader {
-    private static enum Command {
+    private enum Command {
         COMMENT("#"),
         VERTEX("v"),
         VERTEX_TEXTURE("vt"),

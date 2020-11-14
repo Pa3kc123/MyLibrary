@@ -2,6 +2,7 @@ package sk.pa3kc.mylibrary.json;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,12 +19,18 @@ public abstract class JsonParser {
         return JsonEncoder.encodeJsonArray(list, new StringBuilder()).toString();
     }
 
+    public static Map<String, Object> decodeJsonObject(Reader reader) throws JsonException {
+        return JsonDecoder.decodeJsonObject(new JsonTokenizer(reader), new HashMap<String, Object>());
+    }
     public static Map<String, Object> decodeJsonObject(String jsonString) throws JsonException {
         jsonString = jsonString.trim();
         validateJson(jsonString);
         return JsonDecoder.decodeJsonObject(new JsonTokenizer(jsonString), new HashMap<String, Object>());
     }
 
+    public static List<Object> decodeJsonArray(Reader reader) {
+        return JsonDecoder.decodeJsonArray(new JsonTokenizer(reader), new ArrayList<Object>());
+    }
     public static List<Object> decodeJsonArray(String jsonString) {
         jsonString = jsonString.trim();
         validateJson(jsonString);

@@ -1,4 +1,4 @@
-package sk.pa3kc.mylibrary
+package sk.pa3kc.mylibrary.config_gen_kt
 
 import java.io.File
 import java.io.FileOutputStream

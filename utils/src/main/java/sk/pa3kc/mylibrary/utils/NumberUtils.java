@@ -1,7 +1,7 @@
 package sk.pa3kc.mylibrary.utils;
 
-public abstract class NumberUtils
-{
+@SuppressWarnings("unused")
+public abstract class NumberUtils {
     private NumberUtils() {}
 
     /**
@@ -61,7 +61,7 @@ public abstract class NumberUtils
 
         int result = 0x7FFFFFFF;
         for (int value : values)
-            result = result > value ? value : result;
+            result = Math.min(result, value);
 
         return result;
     }
@@ -76,26 +76,26 @@ public abstract class NumberUtils
 
         int result = 0x80000000;
         for (int value : values)
-            result = result < value ? value : result;
+            result = Math.max(result, value);
 
         return result;
     }
 
     public static int map(int val, int sourceMinRange, int sourceMaxRange) throws ArithmeticException {
         if (sourceMinRange > sourceMaxRange) throw new ArithmeticException("sourceMinRange !< sourceMaxRange");
-        return val < sourceMinRange ? sourceMinRange : val > sourceMaxRange ? sourceMaxRange : val;
+        return val < sourceMinRange ? sourceMinRange : Math.min(val, sourceMaxRange);
     }
     public static long map(long val, long sourceMinRange, long sourceMaxRange) throws ArithmeticException {
         if (sourceMinRange > sourceMaxRange) throw new ArithmeticException("sourceMinRange !< sourceMaxRange");
-        return val < sourceMinRange ? sourceMinRange : val > sourceMaxRange ? sourceMaxRange : val;
+        return val < sourceMinRange ? sourceMinRange : Math.min(val, sourceMaxRange);
     }
     public static float map(float val, float sourceMinRange, float sourceMaxRange) throws ArithmeticException {
         if (sourceMinRange > sourceMaxRange) throw new ArithmeticException("sourceMinRange !< sourceMaxRange");
-        return val < sourceMinRange ? sourceMinRange : val > sourceMaxRange ? sourceMaxRange : val;
+        return val < sourceMinRange ? sourceMinRange : Math.min(val, sourceMaxRange);
     }
     public static double map(double val, double sourceMinRange, double sourceMaxRange) throws ArithmeticException {
         if (sourceMinRange > sourceMaxRange) throw new ArithmeticException("sourceMinRange !< sourceMaxRange");
-        return val < sourceMinRange ? sourceMinRange : val > sourceMaxRange ? sourceMaxRange : val;
+        return val < sourceMinRange ? sourceMinRange : Math.min(val, sourceMaxRange);
     }
 
     /**
@@ -106,7 +106,6 @@ public abstract class NumberUtils
      * @param targetMinRange lower bound  of the value's target range
      * @param targetMaxRange upper bound  of the value's target range
      * @return remmaped value
-     * @throws ArithmeticException
      */
     public static int map(int val, int sourceMinRange, int sourceMaxRange, int targetMinRange, int targetMaxRange) throws ArithmeticException {
         if (sourceMinRange > sourceMaxRange) throw new ArithmeticException("sourceMinRange !< sourceMaxRange");
@@ -121,7 +120,6 @@ public abstract class NumberUtils
      * @param targetMinRange lower bound  of the value's target range
      * @param targetMaxRange upper bound  of the value's target range
      * @return remmaped value
-     * @throws ArithmeticException
      */
     public static long map(long val, long sourceMinRange, long sourceMaxRange, long targetMinRange, long targetMaxRange) throws ArithmeticException {
         if (sourceMinRange > sourceMaxRange) throw new ArithmeticException("sourceMinRange !< sourceMaxRange");
@@ -136,7 +134,6 @@ public abstract class NumberUtils
      * @param targetMinRange lower bound  of the value's target range
      * @param targetMaxRange upper bound  of the value's target range
      * @return remmaped value
-     * @throws ArithmeticException
      */
     public static float map(float val, float sourceMinRange, float sourceMaxRange, float targetMinRange, float targetMaxRange) throws ArithmeticException {
         if (sourceMinRange > sourceMaxRange) throw new ArithmeticException("sourceMinRange !< sourceMaxRange");
@@ -151,7 +148,6 @@ public abstract class NumberUtils
      * @param targetMinRange lower bound  of the value's target range
      * @param targetMaxRange upper bound  of the value's target range
      * @return remmaped value
-     * @throws ArithmeticException
      */
     public static double map(double val, double sourceMinRange, double sourceMaxRange, double targetMinRange, double targetMaxRange) throws ArithmeticException {
         if (sourceMinRange > sourceMaxRange) throw new ArithmeticException("sourceMinRange !< sourceMaxRange");

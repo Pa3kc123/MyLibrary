@@ -1,23 +1,23 @@
-package sk.pa3kc.mylibrary.core;
-
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Map;
+package sk.pa3kc.mylibrary;
 
 import sk.pa3kc.mylibrary.cmd.CmdColor;
 import sk.pa3kc.mylibrary.cmd.CmdUtils;
-import sk.pa3kc.mylibrary.net.Device;
 import sk.pa3kc.mylibrary.json.JsonParser;
+import sk.pa3kc.mylibrary.net.Device;
 import sk.pa3kc.mylibrary.utils.ArgsParser;
 import sk.pa3kc.mylibrary.utils.NumberUtils;
+
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.util.List;
+import java.util.Map;
 
 public class MyLibrary {
     @SuppressWarnings("unchecked")
     public static void main(String[] args) {
         final ArgsParser parser = new ArgsParser(args);
 
-        for (String arg : parser.getAllArguments()) {
+        for (String arg : parser.getAllArgs()) {
             System.out.println(arg);
         }
 
@@ -58,13 +58,31 @@ public class MyLibrary {
 
         Map<String, Object> json = null;
         if (args.length != 0) {
-            String val = null;
+            final String val;
+            InputStreamReader isr = null;
 
             try {
-                val = new String(Files.readAllBytes(Paths.get(parser.getArgument(0))), "utf-8");
+                final char[] buffer = new char[4096];
+                isr = new InputStreamReader(new FileInputStream(parser.getArg(0)), "utf-8");
+
+                final StringBuilder builder = new StringBuilder();
+
+                for (int bytes = isr.read(buffer); bytes != -1; bytes = isr.read(buffer)) {
+                    builder.append(buffer);
+                }
+
+                val = builder.toString();
             } catch (Throwable ex) {
                 ex.printStackTrace();
                 return;
+            } finally {
+                if (isr != null) {
+                    try {
+                        isr.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
             }
 
             json = JsonParser.decodeJsonObject(val);

@@ -1,14 +1,24 @@
-<?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>sk.pa3kc.mylibrary</groupId>
   <artifactId>utils</artifactId>
   <version>1.0</version>
+
   <name>utils</name>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.jetbrains</groupId>
+      <artifactId>annotations</artifactId>
+    </dependency>
+  </dependencies>
+
   <parent>
+    <artifactId>mylibrary</artifactId>
     <groupId>sk.pa3kc.mylibrary</groupId>
-    <artifactId>core</artifactId>
-    <version>1.6</version>
+    <version>1.0</version>
   </parent>
 </project>

@@ -1,7 +1,6 @@
 package sk.pa3kc.mylibrary.json;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -87,11 +86,12 @@ abstract class JsonDecoder {
                 break;
             }
 
-            if (",}".indexOf(useLast ? tokenizer.getCurrChar() : tokenizer.nextClearChar()) == -1) {
+            final char cmpChar = useLast ? tokenizer.getCurrChar() : tokenizer.nextClearChar();
+            if (",}".indexOf(cmpChar) == -1) {
                 throw new JsonException("Invalid token at " + tokenizer.getLineIndex() + "x" + tokenizer.getCharIndex());
             }
 
-            if ((useLast ? tokenizer.nextClearChar() : tokenizer.getCurrChar()) == '}') {
+            if (cmpChar == '}') {
                 break;
             }
 
@@ -164,11 +164,12 @@ abstract class JsonDecoder {
                 break;
             }
 
-            if (",}".indexOf(useLast ? tokenizer.getCurrChar() : tokenizer.nextClearChar()) == -1) {
+            final char cmpChar = useLast ? tokenizer.getCurrChar() : tokenizer.nextClearChar();
+            if (",]".indexOf(cmpChar) == -1) {
                 throw new JsonException("Invalid token at " + tokenizer.getLineIndex() + "x" + tokenizer.getCharIndex());
             }
 
-            if ((useLast ? tokenizer.nextClearChar() : tokenizer.getCurrChar()) == '}') {
+            if (cmpChar == ']') {
                 break;
             }
 
@@ -180,7 +181,7 @@ abstract class JsonDecoder {
 
     private static String string(JsonTokenizer tokenizer) throws JsonException {
         final StringBuilder builder = new StringBuilder();
-        if (tokenizer.nextClearChar() != '"') {
+        if (tokenizer.getCurrChar() != '"' && tokenizer.nextClearChar() != '"') {
             throw new JsonException("Missing '\"' at " + tokenizer.getLineIndex() + "x" + tokenizer.getCharIndex());
         }
 
@@ -221,7 +222,6 @@ abstract class JsonDecoder {
 
                 case '"':
                     final String result = builder.toString();
-                    System.out.println(result);
                 return result;
 
                 default:
